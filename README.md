@@ -1,6 +1,7 @@
 # VentureCanvas
 ## Project description 
 **Eine community-getriebene Plattform für Innovationsprojekte**
+
 Diese Webplattform dient als zentraler Ort, an dem Nutzer ihre innovativen Projekte präsentieren, entdecken und weiterentwickeln können. 
  
 Nutzer haben die Möglichkeit, eigene Projekte hochzuladen und detailliert vorzustellen, inklusive Beschreibungen, Dateien und weiterführenden Informationen. Gleichzeitig können sie durch Projekte anderer stöbern, sich inspirieren lassen.
