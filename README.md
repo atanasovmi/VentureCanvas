@@ -2,7 +2,7 @@
 ## Project description 
 <p align="center">
   <p align="center">
-<strong>Eine community-getriebene Plattform für Innovationsprojekte<strong>
+<strong>Eine community-getriebene Plattform für Innovationsprojekte<strong><br>
 
 Diese Webplattform dient als zentraler Ort, an dem Nutzer ihre innovativen Projekte präsentieren, entdecken und weiterentwickeln können. 
  
