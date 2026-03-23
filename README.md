@@ -18,8 +18,8 @@ Insgesamt verbindet die Plattform Präsentation, Zusammenarbeit und Monetarisier
 
 **Als Nutzer möchte ich mich auf der Plattform einloggen.**
 **Beschreibung:** Die Anwendung ermöglicht registrierten Nutzern, sich mit ihren Zugangsdaten zu authentifizieren.
-**Eingaben:** E-Mail, Passwort
-**Ausgaben:** Benutzersitzung gestartet (intern: User-Objekt)
+**Input:** E-Mail, Passwort
+**Output:** Benutzersitzung gestartet (intern: User-Objekt)
 
 ---
 
@@ -27,8 +27,8 @@ Insgesamt verbindet die Plattform Präsentation, Zusammenarbeit und Monetarisier
 
 Als Nutzer möchte ich mein Profil ansehen.
 Beschreibung: Die Anwendung zeigt die persönlichen Informationen und Aktivitäten des Nutzers an.
-Eingaben: Benutzer-ID (aus der Sitzung)
-Ausgaben: Profildaten angezeigt (intern: User-Profil-Daten)
+Input: Benutzer-ID (aus der Sitzung)
+Output: Profildaten angezeigt (intern: User-Profil-Daten)
 
 ---
 
@@ -36,8 +36,8 @@ Ausgaben: Profildaten angezeigt (intern: User-Profil-Daten)
 
 Als Nutzer möchte ich nach dem Login verfügbare Projekte sehen.
 Beschreibung: Die Anwendung zeigt eine Liste aller verfügbaren Projekte an.
-Eingaben: Benutzersitzung
-Ausgaben: Projektliste angezeigt (intern: Liste[Projekt])
+Input: Benutzersitzung
+Output: Projektliste angezeigt (intern: Liste[Projekt])
 
 ---
 
@@ -45,8 +45,8 @@ Ausgaben: Projektliste angezeigt (intern: Liste[Projekt])
 
 Als Nutzer möchte ich nach Projekten suchen.
 Beschreibung: Die Anwendung filtert Projekte basierend auf einem Suchbegriff.
-Eingaben: Suchbegriff
-Ausgaben: Gefilterte Projektliste (intern: Liste[Projekt])
+Input: Suchbegriff
+Output: Gefilterte Projektliste (intern: Liste[Projekt])
 
 ---
 
@@ -54,8 +54,8 @@ Ausgaben: Gefilterte Projektliste (intern: Liste[Projekt])
 
 Als Nutzer möchte ich detaillierte Informationen zu einem Projekt sehen.
 Beschreibung: Die Anwendung zeigt Beschreibung, Dateien und Metadaten eines Projekts an.
-Eingaben: Projekt-ID
-Ausgaben: Projektdetails angezeigt (intern: Projekt-Objekt)
+Input: Projekt-ID
+Output: Projektdetails angezeigt (intern: Projekt-Objekt)
 
 ---
 
@@ -63,8 +63,8 @@ Ausgaben: Projektdetails angezeigt (intern: Projekt-Objekt)
 
 Als Nutzer möchte ich ein Projekt kommentieren.
 Beschreibung: Die Anwendung ermöglicht es Nutzern, Kommentare zu einem Projekt hinzuzufügen.
-Eingaben: Projekt-ID, Kommentartext
-Ausgaben: Kommentar gespeichert und angezeigt (intern: Kommentar-Objekt)
+Input: Projekt-ID, Kommentartext
+Output: Kommentar gespeichert und angezeigt (intern: Kommentar-Objekt)
 
 ---
 
@@ -72,8 +72,8 @@ Ausgaben: Kommentar gespeichert und angezeigt (intern: Kommentar-Objekt)
 
 Als Nutzer möchte ich ein Projekt bewerten.
 Beschreibung: Die Anwendung ermöglicht es Nutzern, eine Bewertung abzugeben.
-Eingaben: Projekt-ID, Bewertungswert
-Ausgaben: Bewertung gespeichert (intern: Bewertungs-Objekt)
+Input: Projekt-ID, Bewertungswert
+Output: Bewertung gespeichert (intern: Bewertungs-Objekt)
 
 ---
 
@@ -81,8 +81,8 @@ Ausgaben: Bewertung gespeichert (intern: Bewertungs-Objekt)
 
 Als Nutzer möchte ich ein Projekt oder dessen Dateien kaufen.
 Beschreibung: Die Anwendung verarbeitet den Kauf von Projektinhalten.
-Eingaben: Projekt-ID, Zahlungsinformationen
-Ausgaben: Kaufbestätigung (intern: Bestell-Objekt)
+Input: Projekt-ID, Zahlungsinformationen
+Output: Kaufbestätigung (intern: Bestell-Objekt)
 
 ---
 
@@ -90,8 +90,8 @@ Ausgaben: Kaufbestätigung (intern: Bestell-Objekt)
 
 Als Nutzer möchte ich gekaufte Projektdateien herunterladen.
 Beschreibung: Die Anwendung ermöglicht den Zugriff auf Dateien nach dem Kauf.
-Eingaben: Kauf-ID
-Ausgaben: Datei-Download (intern: Dateidaten)
+Input: Kauf-ID
+Output: Datei-Download (intern: Dateidaten)
 
 ---
 
@@ -99,8 +99,8 @@ Ausgaben: Datei-Download (intern: Dateidaten)
 
 Als Nutzer/Ersteller möchte ich ein neues Projekt hochladen.
 Beschreibung: Die Anwendung ermöglicht es Nutzern, Projekte zu erstellen und zu veröffentlichen.
-Eingaben: Projekttitel, Beschreibung, Dateien
-Ausgaben: Projekt erstellt (intern: Projekt-Objekt)
+Input: Projekttitel, Beschreibung, Dateien
+Output: Projekt erstellt (intern: Projekt-Objekt)
 
 ---
 
@@ -108,8 +108,8 @@ Ausgaben: Projekt erstellt (intern: Projekt-Objekt)
 
 Als Nutzer/Ersteller möchte ich mein Projekt bearbeiten.
 Beschreibung: Die Anwendung ermöglicht das Aktualisieren von Projektdaten.
-Eingaben: Projekt-ID, aktualisierte Daten
-Ausgaben: Projekt aktualisiert (intern: Projekt-Objekt)
+Input: Projekt-ID, aktualisierte Daten
+Output: Projekt aktualisiert (intern: Projekt-Objekt)
 
 ---
 
@@ -117,8 +117,8 @@ Ausgaben: Projekt aktualisiert (intern: Projekt-Objekt)
 
 Als Nutzer/Ersteller möchte ich einen Preis für mein Projekt festlegen.
 Beschreibung: Die Anwendung ermöglicht die Monetarisierung von Projekten.
-Eingaben: Projekt-ID, Preis
-Ausgaben: Preis gespeichert (intern: Preisdaten)
+Input: Projekt-ID, Preis
+Output: Preis gespeichert (intern: Preisdaten)
 
 
 ### Use Case 
