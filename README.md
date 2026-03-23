@@ -14,6 +14,8 @@ Insgesamt verbindet die Plattform Präsentation, Zusammenarbeit und Monetarisier
 
 ### User Stories 
 
+### Use Case 
+
 ### Data types 
 
 ### Inputs and expected outputs
