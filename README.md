@@ -12,9 +12,118 @@ Insgesamt verbindet die Plattform Präsentation, Zusammenarbeit und Monetarisier
 
  <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white" alt="Python"> <img src="https://img.shields.io/badge/Flask-3.1-black?logo=flask&logoColor=white" alt="Flask"> <img src="https://img.shields.io/badge/Vue-3-4FC08D?logo=vue.js&logoColor=white" alt="Vue 3"> <img src="https://img.shields.io/badge/Quasar-2-1976D2?logo=quasar&logoColor=white" alt="Quasar"> <img src="https://img.shields.io/badge/SQLAlchemy-2.0-red?logo=python&logoColor=white" alt="SQLAlchemy"> <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript"> <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 
-### User Stories 
+## User Stories (Formatierung noch herausfinden!!)
+
+### 1. Login
+
+**Als Nutzer möchte ich mich auf der Plattform einloggen.**
+**Beschreibung:** Die Anwendung ermöglicht registrierten Nutzern, sich mit ihren Zugangsdaten zu authentifizieren.
+**Eingaben:** E-Mail, Passwort
+**Ausgaben:** Benutzersitzung gestartet (intern: User-Objekt)
+
+---
+
+### 2. Profil anzeigen
+
+Als Nutzer möchte ich mein Profil ansehen.
+Beschreibung: Die Anwendung zeigt die persönlichen Informationen und Aktivitäten des Nutzers an.
+Eingaben: Benutzer-ID (aus der Sitzung)
+Ausgaben: Profildaten angezeigt (intern: User-Profil-Daten)
+
+---
+
+### 3. Projekte anzeigen
+
+Als Nutzer möchte ich nach dem Login verfügbare Projekte sehen.
+Beschreibung: Die Anwendung zeigt eine Liste aller verfügbaren Projekte an.
+Eingaben: Benutzersitzung
+Ausgaben: Projektliste angezeigt (intern: Liste[Projekt])
+
+---
+
+### 4. Projekte suchen
+
+Als Nutzer möchte ich nach Projekten suchen.
+Beschreibung: Die Anwendung filtert Projekte basierend auf einem Suchbegriff.
+Eingaben: Suchbegriff
+Ausgaben: Gefilterte Projektliste (intern: Liste[Projekt])
+
+---
+
+### 5. Projektdetails anzeigen
+
+Als Nutzer möchte ich detaillierte Informationen zu einem Projekt sehen.
+Beschreibung: Die Anwendung zeigt Beschreibung, Dateien und Metadaten eines Projekts an.
+Eingaben: Projekt-ID
+Ausgaben: Projektdetails angezeigt (intern: Projekt-Objekt)
+
+---
+
+### 6. Projekt kommentieren
+
+Als Nutzer möchte ich ein Projekt kommentieren.
+Beschreibung: Die Anwendung ermöglicht es Nutzern, Kommentare zu einem Projekt hinzuzufügen.
+Eingaben: Projekt-ID, Kommentartext
+Ausgaben: Kommentar gespeichert und angezeigt (intern: Kommentar-Objekt)
+
+---
+
+### 7. Projekt bewerten
+
+Als Nutzer möchte ich ein Projekt bewerten.
+Beschreibung: Die Anwendung ermöglicht es Nutzern, eine Bewertung abzugeben.
+Eingaben: Projekt-ID, Bewertungswert
+Ausgaben: Bewertung gespeichert (intern: Bewertungs-Objekt)
+
+---
+
+### 8. Projekt kaufen
+
+Als Nutzer möchte ich ein Projekt oder dessen Dateien kaufen.
+Beschreibung: Die Anwendung verarbeitet den Kauf von Projektinhalten.
+Eingaben: Projekt-ID, Zahlungsinformationen
+Ausgaben: Kaufbestätigung (intern: Bestell-Objekt)
+
+---
+
+### 9. Projektdateien herunterladen
+
+Als Nutzer möchte ich gekaufte Projektdateien herunterladen.
+Beschreibung: Die Anwendung ermöglicht den Zugriff auf Dateien nach dem Kauf.
+Eingaben: Kauf-ID
+Ausgaben: Datei-Download (intern: Dateidaten)
+
+---
+
+### 10. Projekt hochladen
+
+Als Nutzer/Ersteller möchte ich ein neues Projekt hochladen.
+Beschreibung: Die Anwendung ermöglicht es Nutzern, Projekte zu erstellen und zu veröffentlichen.
+Eingaben: Projekttitel, Beschreibung, Dateien
+Ausgaben: Projekt erstellt (intern: Projekt-Objekt)
+
+---
+
+### 11. Projekt bearbeiten
+
+Als Nutzer/Ersteller möchte ich mein Projekt bearbeiten.
+Beschreibung: Die Anwendung ermöglicht das Aktualisieren von Projektdaten.
+Eingaben: Projekt-ID, aktualisierte Daten
+Ausgaben: Projekt aktualisiert (intern: Projekt-Objekt)
+
+---
+
+### 12. Projektpreis festlegen
+
+Als Nutzer/Ersteller möchte ich einen Preis für mein Projekt festlegen.
+Beschreibung: Die Anwendung ermöglicht die Monetarisierung von Projekten.
+Eingaben: Projekt-ID, Preis
+Ausgaben: Preis gespeichert (intern: Preisdaten)
+
 
 ### Use Case 
+
+
 
 ### Data types 
 
