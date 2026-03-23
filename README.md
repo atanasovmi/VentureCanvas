@@ -1,7 +1,6 @@
 # VentureCanvas
 ## Project description 
 <p align="center">
-  <h1 align="center">🚀 VentureCanvas</h1>
   <p align="center">
 <strong>Eine community-getriebene Plattform für Innovationsprojekte<strong>
 
