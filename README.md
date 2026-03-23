@@ -3,7 +3,7 @@
 <p align="center">
   <h1 align="center">🚀 VentureCanvas</h1>
   <p align="center">
-**Eine community-getriebene Plattform für Innovationsprojekte**
+<strong>Eine community-getriebene Plattform für Innovationsprojekte<strong>
 
 Diese Webplattform dient als zentraler Ort, an dem Nutzer ihre innovativen Projekte präsentieren, entdecken und weiterentwickeln können. 
  
