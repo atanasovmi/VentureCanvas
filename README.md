@@ -12,6 +12,12 @@ Insgesamt verbindet die Plattform Präsentation, Zusammenarbeit und Monetarisier
 
  <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white" alt="Python"> <img src="https://img.shields.io/badge/Flask-3.1-black?logo=flask&logoColor=white" alt="Flask"> <img src="https://img.shields.io/badge/Vue-3-4FC08D?logo=vue.js&logoColor=white" alt="Vue 3"> <img src="https://img.shields.io/badge/Quasar-2-1976D2?logo=quasar&logoColor=white" alt="Quasar"> <img src="https://img.shields.io/badge/SQLAlchemy-2.0-red?logo=python&logoColor=white" alt="SQLAlchemy"> <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript"> <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 
+## Inspiration
+Viele Menschen haben ein Notizbuch voller Projektideen – einen Bodenfeuchtigkeitsmesser, einen RAG-Chatbot, eine mechanische Tastatur, aber keinen gemeinsamen Ort, an dem sie diese festhalten, präsentieren oder herausfinden können, was die Umsetzung mehrerer dieser Ideen gleichzeitig in Bezug auf Teile, Dienstleistungen und Fachkenntnisse kosten würde.
+
+VentureCanvas löst genau dieses Problem: eine kleine Community-Galerie, in der jeder Nutzer seine eigenen Projekte veröffentlichen und interessante Ideen von anderen sammeln kann. Die „Collection“-Ansicht übernimmt die eigentliche Arbeit: Sie fasst die erforderlichen Fähigkeiten, Werkzeuge, APIs und Hardware aller gespeicherten Projekte zusammen, sodass der Kurator die gesamte Einkaufsliste auf einen Blick sieht.
+
+
 ## User Stories (Formatierung noch herausfinden!!)
 
 ### 1. Login
