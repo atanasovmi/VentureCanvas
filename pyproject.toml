@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "venturecanvas"
+version = "0.1.0"
+description = "Community content platform for innovation project sharing (FHNW OOP SS26)."
+requires-python = ">=3.11"
+dependencies = [
+    "nicegui",
+    "sqlmodel",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["venturecanvas*"]
+exclude = ["tests*", "docs*"]

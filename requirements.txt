@@ -1,0 +1,4 @@
+nicegui
+sqlmodel
+python-dotenv
+pytest
