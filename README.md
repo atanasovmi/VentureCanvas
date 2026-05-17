@@ -139,3 +139,244 @@ Each use case maps one-to-one to the story of the same number.
 | **Post-condition** | The summary card reflects the current collection contents. |
 
 ---
+
+## 3 · Architecture
+
+VentureCanvas follows a strict three-layer architecture with a thin UI
+on top. Arrows point downward — no upward dependencies.
+
+```
+┌──────────────────────────────────────────────────────┐
+│  ui/  (View + Controller)                            │
+│    pages.py       — NiceGUI @ui.page bindings        │
+│    controllers.py — Auth/Home/Project/Collection     │
+│    session_state  — browser login state              │
+└────────────────────────┬─────────────────────────────┘
+                         │ plain Python calls
+┌────────────────────────▼─────────────────────────────┐
+│  services/  (business logic, class-based)            │
+│    auth_service.py · project_service.py              │
+│    collection_service.py · errors.py                 │
+└────────────────────────┬─────────────────────────────┘
+                         │ DAOs + session_scope
+┌────────────────────────▼─────────────────────────────┐
+│  data_access/  (Repository / DAO + Facade)           │
+│    db.py (Database facade) · dao.py (BaseDAO + 3)    │
+│    password_hasher.py · seed.py (ProjectSeeder)      │
+└────────────────────────┬─────────────────────────────┘
+                         │ SQLModel / SQLAlchemy 2
+┌────────────────────────▼─────────────────────────────┐
+│  domain/  (Model — SQLModel entities)                │
+│    models.py — User · Project · CollectionItem       │
+└──────────────────────────────────────────────────────┘
+```
+
+### Named patterns (rubric ticks)
+
+| Pattern | Where |
+|---|---|
+| **MVC** | `domain/` (Model) · `ui/pages.py` (View) · `ui/controllers.py` (Controller) |
+| **Repository / DAO** | `data_access/dao.py` — `BaseDAO` + `UserDAO` / `ProjectDAO` / `CollectionDAO` |
+| **Facade** | `data_access/db.py::Database` — hides the SQLModel engine behind `session_scope` + `init_schema_and_seed` |
+| **Composition Root** | `application.py::VentureCanvasApplication` — builds the whole object graph from one constructor |
+
+UML class diagram: `docs/architecture-diagrams/uml_class_architecture.png`.
+Use-case diagram: `docs/architecture-diagrams/uml_use_case_diagram.png`.
+
+---
+
+## 4 · Database & ORM
+
+Three tables mapped to three SQLModel classes; SQLite in development,
+PostgreSQL in production (set `DATABASE_URL`).
+
+```
+users  ─1:N─> projects  ─1:N─>  collection_items  <─1:1─  users
+                                (unique user_id,project_id)
+```
+
+ER diagram: `docs/architecture-diagrams/er_diagram.png`.
+
+Every column carries an explicit `Field(...)` declaration
+(`min_length`, `max_length`, `unique`, `index`, `foreign_key`) so the
+schema documents its own constraints and the type system stops
+bad data at object-construction time for non-table code paths. Because
+SQLModel's `table=True` models skip pydantic validation at
+construction, `ProjectService` re-runs the same title/description rules
+defensively in code.
+
+---
+
+## 5 · Meeting the project requirements
+
+| Requirement (Guidelines PDF / Plan.md) | How we meet it |
+|---|---|
+| **Python web app** | Single `venturecanvas/` package, run with `py -m venturecanvas`. |
+| **NiceGUI front-end** | `ui/pages.py` registers seven `@ui.page` routes; UI components are Python objects on the server. |
+| **Three-layer architecture** | `ui` → `services` → `data_access` → `domain`. Imports only go downward. |
+| **OOP throughout** | Every file under `domain/`, `data_access/`, `services/` and `ui/controllers.py` is class-based; dependencies are injected via constructors (Plan.md §0.1). |
+| **ORM, no raw SQL** | SQLModel (SQLAlchemy 2) with Relationship back-populates; DAOs only ever call `session.exec(select(...))`. |
+| **Data validation** | `Field(min_length=…, max_length=…, unique=…)` on every user-facing column; services add defensive checks where SQLModel's `table=True` is permissive. |
+| **Tests** | 14 pytest tests across unit / DB / integration — see §9. |
+| **Team of 3 with equitable GitHub contribution** | See §11. |
+
+---
+
+## 6 · Used libraries
+
+| Library | Version | Purpose |
+|---|---|---|
+| [NiceGUI](https://nicegui.io) | 3.10 | Python-native UI — every page is a server-side Python object. |
+| [SQLModel](https://sqlmodel.tiangolo.com) | 0.0.38 | ORM + pydantic validation — the `User`, `Project`, `CollectionItem` models. |
+| [python-dotenv](https://github.com/theskumar/python-dotenv) | 1.2 | Load `DATABASE_URL` from a local `.env` in development. |
+| [pytest](https://docs.pytest.org) | 9.0 | Test runner. |
+
+Standard library used directly:
+
+| Module | Used for |
+|---|---|
+| `hashlib.pbkdf2_hmac` + `secrets` | `PasswordHasher` — PBKDF2-HMAC-SHA256 at 200 k iterations, no external crypto dependency. |
+| `hmac.compare_digest` | Constant-time verification. |
+| `contextlib.contextmanager` | `Database.session_scope`. |
+| `enum.Enum` | `Category` — closed set for filter chips. |
+
+---
+
+## 7 · Repository structure
+
+```
+venturecanvas-v2/
+├── Plan.md                                 # Rebuild plan (rubric-driven)
+├── README.md                               # ← this file
+├── pyproject.toml · pytest.ini · requirements.txt · .env.example
+├── venturecanvas/
+│   ├── __init__.py · __main__.py · application.py
+│   ├── domain/
+│   │   └── models.py                       # SQLModel entities + Category enum
+│   ├── data_access/
+│   │   ├── db.py                           # Database facade
+│   │   ├── dao.py                          # BaseDAO + 3 subclasses
+│   │   ├── password_hasher.py              # stdlib PBKDF2
+│   │   └── seed.py                         # ProjectSeeder (idempotent)
+│   ├── services/
+│   │   ├── auth_service.py
+│   │   ├── project_service.py
+│   │   ├── collection_service.py
+│   │   └── errors.py                       # typed ServiceError hierarchy
+│   ├── ui/
+│   │   ├── controllers.py                  # 4 controller classes
+│   │   ├── pages.py                        # NiceGUI routes
+│   │   └── session_state.py                # browser login state
+│   └── static/
+│       └── styles.css
+├── tests/
+│   ├── conftest.py                         # fixtures + InMemorySessionState
+│   ├── test_unit.py                        # service-level
+│   ├── test_db.py                          # DAO + ORM
+│   └── test_integration.py                 # controller end-to-end
+└── docs/
+    ├── architecture-diagrams/              # UML class, use-case, ER (PNG)
+    ├── ui-images/                          # screenshots
+    ├── SS26_Guidelines_Programmierprojekt (1).pdf
+    └── SS26_Assessment_Programmierprojekt.xlsm
+```
+
+---
+
+## 8 · How to run
+
+**Requires Python 3.11+.**
+
+```bash
+# 1. Clone
+git clone https://github.com/atanasovmi/VentureCanvas-v2.git
+cd VentureCanvas-v2
+
+# 2. (Optional) copy the env template
+cp .env.example .env        # defaults to SQLite at data/venturecanvas.db
+
+# 3. Create a virtualenv and install
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# 4. Run
+python -m venturecanvas      # opens http://localhost:8080
+```
+
+The first launch automatically creates the SQLite file and seeds one
+demo user plus six sample projects across the five categories.
+
+**Demo credentials:** `demo@example.com` / `demo123`
+
+---
+
+## 9 · Testing
+
+```bash
+pytest
+```
+
+14 tests, all green:
+
+| File | Count | Layer |
+|---|---|---|
+| `tests/test_unit.py` | 8 | Service layer (Auth, Project, Collection) |
+| `tests/test_db.py` | 3 | DAO + ORM (roundtrip, unique constraint, seeder) |
+| `tests/test_integration.py` | 3 | Controller end-to-end flows |
+
+Each test opens a fresh `tmp_path`-backed SQLite, so there is no shared
+state between tests. Controller tests substitute `SessionState` with an
+in-memory test double, which means they exercise the full service →
+DAO → ORM path without needing a NiceGUI browser session.
+
+---
+
+## 10 · UI screenshots
+
+See `docs/ui-images/`:
+
+- `home.png` — browse + filter chips
+- `project_detail.png` — detail view with requirement chips
+- `new_project.png` — create form
+- `collection.png` — saved projects + resource summary
+
+*(Screenshots are captured after a `python -m venturecanvas` run against the seeded demo data.)*
+
+---
+
+## 11 · Team & contributions
+
+| Member | Owns | GitHub |
+|---|---|---|
+| Mihael | Data Access, Bootstrap & Entry Point, Tests, Documentation | *@atanasovmi* |
+| Eva | Core Configuration & Setup, Domain Layer, Service Layer, Documentation | *@evavelkov* |
+| Minh | UI Layer, Documentation | *@Minh-Trang-Trinh* |
+
+---
+
+## 12 · Design decisions
+
+- **Session-injection DAOs.** Services open a `Database.session_scope`
+  and pass the session to DAOs, so one business operation equals one
+  transaction. 
+- **PasswordHasher in `data_access/`.** A hash is the at-rest
+  representation of a secret — a persistence concern. Placing it there
+  lets both `AuthService` and `ProjectSeeder` depend on it without
+  crossing the layer boundary upward.
+- **Enum `Category`.** Replaces the old repo's free-text category
+  column. Rejects unknown values at the service boundary and makes the
+  filter chips a closed set.
+- **`expire_on_commit=False` on sessions.** Services return entities
+  whose scalar attributes are still readable after the session closes,
+  which keeps controllers and pages session-agnostic.
+- **Twelve features, full stop.** Comments, free-text search,
+  pagination, profile edit, admin panel and animated backgrounds from
+  the previous stack were cut. Every feature we kept has a page, an
+  owner, and a test.
+
+---
+
+## 13 · License
+
+MIT — see [`LICENSE`](./LICENSE).
