@@ -1,21 +1,20 @@
 # VentureCanvas
 ## Project description 
-Eine community-getriebene Plattform für Innovationsprojekte
 
-Diese Webplattform dient als zentraler Ort, an dem Nutzer ihre innovativen Projekte präsentieren, entdecken und weiterentwickeln können. 
- 
-Nutzer haben die Möglichkeit, eigene Projekte hochzuladen und detailliert vorzustellen, inklusive Beschreibungen, Dateien und weiterführenden Informationen. Gleichzeitig können sie durch Projekte anderer stöbern, sich inspirieren lassen.
- 
-Ein zentraler Bestandteil der Plattform ist die Interaktion innerhalb der Community: Projekte können kommentiert, diskutiert und bewertet werden. 
-Nutzer können Projekte oder dazugehörige Dateien kaufen und herunterladen, um diese weiterzuverwenden oder als Grundlage für eigene Entwicklungen zu nutzen.
-Insgesamt verbindet die Plattform Präsentation, Zusammenarbeit und Monetarisierung.
+A community-driven platform for innovation projects
+This web platform serves as a central hub where users can present, discover, and further develop their innovative projects.
+
+Users can upload their own projects and present them in detail, including descriptions, files, and additional information. At the same time, they can browse through other users’ projects and find inspiration.
+
+A central component of the platform is interaction within the community: projects can be commented on, discussed, and rated. Users can purchase and download projects or associated files to reuse them or use them as a basis for their own developments. Overall, the platform combines presentation, collaboration, and monetization.
+
 
  <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white" alt="Python"> <img src="https://img.shields.io/badge/Flask-3.1-black?logo=flask&logoColor=white" alt="Flask"> <img src="https://img.shields.io/badge/Vue-3-4FC08D?logo=vue.js&logoColor=white" alt="Vue 3"> <img src="https://img.shields.io/badge/Quasar-2-1976D2?logo=quasar&logoColor=white" alt="Quasar"> <img src="https://img.shields.io/badge/SQLAlchemy-2.0-red?logo=python&logoColor=white" alt="SQLAlchemy"> <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript"> <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 
 ## Inspiration
-Viele Menschen haben ein Notizbuch voller Projektideen – einen Bodenfeuchtigkeitsmesser, einen RAG-Chatbot, eine mechanische Tastatur, aber keinen gemeinsamen Ort, an dem sie diese festhalten, präsentieren oder herausfinden können, was die Umsetzung mehrerer dieser Ideen gleichzeitig in Bezug auf Teile, Dienstleistungen und Fachkenntnisse kosten würde.
+Many people have a notebook full of project ideas—a soil moisture meter, a RAG chatbot, a mechanical keyboard—but no central place where they can record them, present them, or figure out what it would cost to bring several of these ideas to life at once in terms of parts, services, and expertise.
 
-VentureCanvas löst genau dieses Problem: eine kleine Community-Galerie, in der jeder Nutzer seine eigenen Projekte veröffentlichen und interessante Ideen von anderen sammeln kann. Die „Collection“-Ansicht übernimmt die eigentliche Arbeit: Sie fasst die erforderlichen Fähigkeiten, Werkzeuge, APIs und Hardware aller gespeicherten Projekte zusammen, sodass der Kurator die gesamte Einkaufsliste auf einen Blick sieht.
+VentureCanvas solves exactly this problem: a small community gallery where every user can publish their own projects and collect interesting ideas from others. The “Collection” view does the heavy lifting: it summarizes the required skills, tools, APIs, and hardware for all saved projects, so the curator can see the entire shopping list at a glance.
 
 
 ## User Stories (Formatierung noch herausfinden!!)
