@@ -1,0 +1,56 @@
+@startuml er_diagram
+title VentureCanvas — Entity-Relationship (SQLite / SQLModel)
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #4A5568
+skinparam defaultFontName Helvetica
+hide circle
+hide methods
+
+entity "users" as USER {
+  * id : INTEGER <<PK>>
+  --
+  * username : VARCHAR(40) <<UQ, IDX>>
+  * email : VARCHAR(120) <<UQ, IDX>>
+  * password_hash : VARCHAR(256)
+  * created_at : DATETIME
+}
+
+entity "projects" as PROJECT {
+  * id : INTEGER <<PK>>
+  --
+  * owner_id : INTEGER <<FK → users.id, IDX>>
+  * title : VARCHAR(200)
+  * description : TEXT
+  * category : VARCHAR <<IDX>>
+    required_skills : VARCHAR(300)
+    required_tools : VARCHAR(300)
+    required_apis : VARCHAR(300)
+    required_hardware : VARCHAR(300)
+  * created_at : DATETIME
+  * updated_at : DATETIME
+}
+
+entity "collection_items" as COLLECTION {
+  * id : INTEGER <<PK>>
+  --
+  * user_id : INTEGER <<FK → users.id, IDX>>
+  * project_id : INTEGER <<FK → projects.id, IDX>>
+  * added_at : DATETIME
+  --
+  UQ (user_id, project_id)
+}
+
+USER ||--o{ PROJECT : "1 owner : many projects"
+USER ||--o{ COLLECTION : "1 user : many saved"
+PROJECT ||--o{ COLLECTION : "1 project : many collectors"
+
+note right of COLLECTION
+  uq_collection_user_project
+  prevents a user from saving
+  the same project twice.
+end note
+
+@enduml

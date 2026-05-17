@@ -1,0 +1,173 @@
+@startuml uml_class_architecture
+title VentureCanvas — Architecture (layers + patterns)
+
+skinparam backgroundColor white
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #4A5568
+skinparam packageBackgroundColor #EDF2F7
+skinparam packageBorderColor #2D3748
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+hide empty members
+
+package "domain (Model)" {
+  enum Category {
+    IOT
+    AI
+    WEB
+    MOBILE
+    HARDWARE
+  }
+  class User {
+    + id : int
+    + username : str
+    + email : str
+    - password_hash : str
+    + created_at : datetime
+  }
+  class Project {
+    + id : int
+    + owner_id : int
+    + title : str
+    + description : str
+    + category : Category
+    + required_skills : str
+    + required_tools : str
+    + required_apis : str
+    + required_hardware : str
+    + created_at : datetime
+    + updated_at : datetime
+  }
+  class CollectionItem {
+    + id : int
+    + user_id : int
+    + project_id : int
+    + added_at : datetime
+  }
+  User "1" o-- "0..*" Project : owns
+  User "1" o-- "0..*" CollectionItem : collects
+  Project "1" o-- "0..*" CollectionItem : collected in
+}
+
+package "data_access (Repository · Facade)" {
+  class Database <<Facade>> {
+    + session_scope()
+    + init_schema_and_seed()
+    - engine
+    - seeder
+  }
+  class BaseDAO<T> <<Repository>> {
+    + add(session, entity)
+    + get(session, id)
+    + list_all(session)
+    + delete(session, entity)
+  }
+  class UserDAO {
+    + get_by_email(session, email)
+    + get_by_username(session, username)
+  }
+  class ProjectDAO {
+    + list_ordered(session, category?)
+  }
+  class CollectionDAO {
+    + get_by_user_and_project(session, user_id, project_id)
+    + list_for_user(session, user_id)
+  }
+  class PasswordHasher {
+    + hash(plaintext) : str
+    + verify(plaintext, stored) : bool
+  }
+  class ProjectSeeder {
+    + is_already_seeded(session) : bool
+    + seed(session)
+  }
+  BaseDAO <|-- UserDAO
+  BaseDAO <|-- ProjectDAO
+  BaseDAO <|-- CollectionDAO
+  ProjectSeeder --> PasswordHasher
+}
+
+package "services (business logic)" {
+  class AuthService {
+    + register(username, email, password) : User
+    + authenticate(email, password) : User
+    + get_user(user_id) : User?
+  }
+  class ProjectService {
+    + list(category?) : list<Project>
+    + get(id) : Project
+    + create(owner_id, ...) : Project
+    + update(id, caller_user_id, ...) : Project
+    + delete(id, caller_user_id)
+  }
+  class CollectionService {
+    + add(user_id, project_id) : CollectionItem
+    + remove(user_id, project_id)
+    + list_projects(user_id) : list<Project>
+    + summary(user_id) : dict
+  }
+  AuthService --> UserDAO
+  AuthService --> PasswordHasher
+  AuthService --> Database
+  ProjectService --> ProjectDAO
+  ProjectService --> Database
+  CollectionService --> CollectionDAO
+  CollectionService --> ProjectDAO
+  CollectionService --> Database
+}
+
+package "ui (View + Controller)" {
+  class SessionState {
+    + login(user_id, username)
+    + logout()
+    + is_authenticated
+    + current_user_id()
+  }
+  class AuthController {
+    + register(...)
+    + login(email, password) : User
+    + logout()
+    + current_user() : User?
+  }
+  class HomeController {
+    + list(category?) : list<Project>
+    + available_categories() : list<Category>
+  }
+  class ProjectController {
+    + get(id) : Project
+    + create(...) : Project
+    + update(id, ...)
+    + delete(id)
+    + is_owner(project) : bool
+  }
+  class CollectionController {
+    + add(project_id)
+    + remove(project_id)
+    + view() : (projects, summary)
+  }
+  class Pages <<View>> {
+    + register()
+  }
+  AuthController --> AuthService
+  AuthController --> SessionState
+  HomeController --> ProjectService
+  ProjectController --> ProjectService
+  ProjectController --> SessionState
+  CollectionController --> CollectionService
+  CollectionController --> SessionState
+  Pages --> AuthController
+  Pages --> HomeController
+  Pages --> ProjectController
+  Pages --> CollectionController
+}
+
+class VentureCanvasApplication <<Composition Root>> {
+  + run()
+}
+VentureCanvasApplication --> Database
+VentureCanvasApplication --> Pages
+VentureCanvasApplication --> AuthService
+VentureCanvasApplication --> ProjectService
+VentureCanvasApplication --> CollectionService
+
+@enduml

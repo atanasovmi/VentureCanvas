@@ -1,0 +1,49 @@
+@startuml uml_use_case_diagram
+title VentureCanvas — Use Cases (Plan §3)
+
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam usecaseBackgroundColor #F8F9FA
+skinparam usecaseBorderColor #4A5568
+skinparam actorBorderColor #2D3748
+skinparam defaultFontName Helvetica
+
+actor "Visitor" as V
+actor "Registered user" as R
+actor "Project owner" as O
+
+R --|> V
+O --|> R
+
+rectangle "VentureCanvas" {
+  usecase "UC-1  Register"                          as UC1
+  usecase "UC-2  Log in"                            as UC2
+  usecase "UC-3  Log out"                           as UC3
+  usecase "UC-4  Browse projects"                   as UC4
+  usecase "UC-5  Filter by category"                as UC5
+  usecase "UC-6  View project detail"               as UC6
+  usecase "UC-7  Create project"                    as UC7
+  usecase "UC-8  Edit my project"                   as UC8
+  usecase "UC-9  Delete my project"                 as UC9
+  usecase "UC-10 Add to collection"                 as UC10
+  usecase "UC-11 Remove from collection"            as UC11
+  usecase "UC-12 View collection + resource summary" as UC12
+}
+
+V --> UC1
+V --> UC4
+V --> UC5
+V --> UC6
+
+R --> UC2
+R --> UC3
+R --> UC7
+R --> UC10
+R --> UC11
+R --> UC12
+
+O --> UC8
+O --> UC9
+
+@enduml
