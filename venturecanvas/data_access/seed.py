@@ -24,9 +24,9 @@ class ProjectSeeder:
     exactly the same routine as every live registration.
     """
 
-    DEMO_EMAIL = "demo@example.com"
-    DEMO_USERNAME = "demo"
-    DEMO_PASSWORD = "demo123"  # noqa: S105 — well-known demo credential
+    DEMO_EMAIL = "admin@venturecanvas.com"
+    DEMO_USERNAME = "admin"
+    DEMO_PASSWORD = "admin123"  # noqa: S105 — well-known demo credential
 
     def __init__(self, password_hasher: PasswordHasher) -> None:
         self._hasher = password_hasher
