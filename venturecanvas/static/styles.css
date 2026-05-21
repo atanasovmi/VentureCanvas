@@ -2,8 +2,29 @@
    Populated during the UI step. */
 
 .hero-section {
-    background: linear-gradient(135deg, rgba(79, 172, 254, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
-    border-radius: 8px;
-    padding: 2rem;
-    margin-bottom: 2rem;
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(167, 139, 250, 0.15) 100%);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #4faaff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.hero-description {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 50rem;
+    margin: 0 auto;
 }
