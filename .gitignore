@@ -66,6 +66,10 @@ vite.config.ts.timestamp-*
 Thumbs.db
 Desktop.ini
 
+# ---------- Tooling & Runtime ----------
+.claude/
+.nicegui/
+
 # ---------- Environment ----------
 .env
 .env.*
