@@ -115,7 +115,8 @@ class Pages:
                     "projects and find inspiration.\n\n"
                     "A central component of the platform is interaction within the community: projects can be "
                     "commented on, discussed, and rated. Users can purchase and download projects or associated "
-                    "files to reuse them or use them as a basis for their own developments."
+                    "files to reuse them or use them as a basis for their own developments.\n\n"
+                    "Overall, the platform combines presentation, collaboration, and monetization."
                 ).classes("hero-description whitespace-pre-wrap")
             
             with ui.row().classes("gap-2 items-center"):
