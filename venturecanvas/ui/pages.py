@@ -263,20 +263,36 @@ class Pages:
         self._header()
         if not self._guard_authenticated():
             return
-        with ui.card().classes("max-w-2xl mx-auto mt-8 p-6"):
-            ui.label("New project").classes("text-xl font-bold mb-2")
-            title = ui.input("Title").classes("w-full")
-            description = ui.textarea("Description").classes("w-full")
-            category = ui.select(
-                {c.value: c.value for c in self._home.available_categories()},
-                label="Category",
-            ).classes("w-full")
-            skills = ui.input("Required skills (comma separated)").classes("w-full")
-            tools = ui.input("Required tools (comma separated)").classes("w-full")
-            apis = ui.input("Required APIs (comma separated)").classes("w-full")
-            hardware = ui.input("Required hardware (comma separated)").classes(
-                "w-full"
+        with ui.card().classes("w-full max-w-4xl mx-auto mt-8 p-8"):
+            ui.label("New project").classes("text-2xl font-bold mb-4")
+
+            with ui.row().classes("w-full gap-4 items-start"):
+                title = ui.input("Title").classes("flex-grow")
+                category = ui.select(
+                    {c.value: c.value for c in self._home.available_categories()},
+                    label="Category",
+                ).classes("w-48")
+
+            description = ui.textarea("Description").props(
+                "rows=4 autogrow"
+            ).classes("w-full mt-2")
+
+            ui.label("Requirements").classes(
+                "text-sm font-semibold mt-4 text-grey-7"
             )
+            with ui.grid(columns=2).classes("w-full gap-x-4 gap-y-0"):
+                skills = ui.input(
+                    "Skills", placeholder="e.g. Python, MQTT"
+                ).classes("w-full")
+                tools = ui.input(
+                    "Tools", placeholder="e.g. ESP32, Mosquitto"
+                ).classes("w-full")
+                apis = ui.input(
+                    "APIs", placeholder="e.g. OpenAI"
+                ).classes("w-full")
+                hardware = ui.input(
+                    "Hardware", placeholder="e.g. Sensor, OLED"
+                ).classes("w-full")
 
             def submit() -> None:
                 if not category.value:
@@ -298,7 +314,8 @@ class Pages:
                 ui.notify("Project created.", type="positive")
                 ui.navigate.to(f"/project/{project.id}")
 
-            ui.button("Create", on_click=submit).props("color=primary")
+            with ui.row().classes("w-full justify-end gap-2 mt-6"):
+                ui.button("Create", on_click=submit).props("color=primary")
 
     def _project_edit_page(self, project_id: int) -> None:
         self._header()
@@ -314,29 +331,45 @@ class Pages:
             ui.navigate.to(f"/project/{project_id}")
             return
 
-        with ui.card().classes("max-w-2xl mx-auto mt-8 p-6"):
-            ui.label(f"Edit: {project.title}").classes("text-xl font-bold mb-2")
-            title = ui.input("Title", value=project.title).classes("w-full")
+        with ui.card().classes("w-full max-w-4xl mx-auto mt-8 p-8"):
+            ui.label(f"Edit: {project.title}").classes("text-2xl font-bold mb-4")
+
+            with ui.row().classes("w-full gap-4 items-start"):
+                title = ui.input("Title", value=project.title).classes("flex-grow")
+                category = ui.select(
+                    {c.value: c.value for c in self._home.available_categories()},
+                    label="Category",
+                    value=project.category.value,
+                ).classes("w-48")
+
             description = ui.textarea(
                 "Description", value=project.description
-            ).classes("w-full")
-            category = ui.select(
-                {c.value: c.value for c in self._home.available_categories()},
-                label="Category",
-                value=project.category.value,
-            ).classes("w-full")
-            skills = ui.input(
-                "Required skills (comma separated)", value=project.required_skills
-            ).classes("w-full")
-            tools = ui.input(
-                "Required tools (comma separated)", value=project.required_tools
-            ).classes("w-full")
-            apis = ui.input(
-                "Required APIs (comma separated)", value=project.required_apis
-            ).classes("w-full")
-            hardware = ui.input(
-                "Required hardware (comma separated)", value=project.required_hardware
-            ).classes("w-full")
+            ).props("rows=4 autogrow").classes("w-full mt-2")
+
+            ui.label("Requirements").classes(
+                "text-sm font-semibold mt-4 text-grey-7"
+            )
+            with ui.grid(columns=2).classes("w-full gap-x-4 gap-y-0"):
+                skills = ui.input(
+                    "Skills",
+                    value=project.required_skills,
+                    placeholder="e.g. Python, MQTT",
+                ).classes("w-full")
+                tools = ui.input(
+                    "Tools",
+                    value=project.required_tools,
+                    placeholder="e.g. ESP32, Mosquitto",
+                ).classes("w-full")
+                apis = ui.input(
+                    "APIs",
+                    value=project.required_apis,
+                    placeholder="e.g. OpenAI",
+                ).classes("w-full")
+                hardware = ui.input(
+                    "Hardware",
+                    value=project.required_hardware,
+                    placeholder="e.g. Sensor, OLED",
+                ).classes("w-full")
 
             def submit() -> None:
                 try:
@@ -356,7 +389,8 @@ class Pages:
                 ui.notify("Project updated.", type="positive")
                 ui.navigate.to(f"/project/{project.id}")
 
-            ui.button("Save", on_click=submit).props("color=primary")
+            with ui.row().classes("w-full justify-end gap-2 mt-6"):
+                ui.button("Save", on_click=submit).props("color=primary")
 
     # ------------------------------------------------------------------ my projects
 
