@@ -62,11 +62,12 @@ class Pages:
 
     def _header(self) -> None:
         """Shared top-bar; every page calls this once at the start."""
-        with ui.header().classes("items-center justify-between"):
-            with ui.row().classes("items-center gap-4"):
-                ui.link("🚀 VentureCanvas", "/").classes(
-                    "text-lg font-bold no-underline text-white"
-                )
+        with ui.header().classes("items-center justify-center"):
+            with ui.row().classes("items-center justify-between w-full max-w-7xl px-6"):
+                with ui.row().classes("items-center gap-4"):
+                    ui.link("🚀 VentureCanvas", "/").classes(
+                        "text-2xl font-bold no-underline text-white"
+                    )
                 ui.link("Home", "/").classes("no-underline text-white")
                 if self._auth.is_authenticated:
                     ui.link("My Projects", "/my-projects").classes(
@@ -119,31 +120,34 @@ class Pages:
                     "Overall, the platform combines presentation, collaboration, and monetization."
                 ).classes("hero-description whitespace-pre-wrap")
             
-            with ui.row().classes("gap-2 items-center"):
-                def select(cat: Optional[Category]) -> None:
-                    selected["category"] = cat
-                    refresh()
+            with ui.column().classes("w-full items-center px-6 gap-4"):
+                ui.label("Discover innovation projects").classes("text-2xl font-bold")
+                
+                with ui.row().classes("gap-2 items-center flex-wrap justify-center"):
+                    def select(cat: Optional[Category]) -> None:
+                        selected["category"] = cat
+                        refresh()
 
-                ui.button("All", on_click=lambda: select(None)).props("outline")
-                for cat in self._home.available_categories():
-                    ui.button(
-                        cat.value, on_click=lambda c=cat: select(c)
-                    ).props("outline")
+                    ui.button("All", on_click=lambda: select(None)).props("outline")
+                    for cat in self._home.available_categories():
+                        ui.button(
+                            cat.value, on_click=lambda c=cat: select(c)
+                        ).props("outline")
 
-            grid = ui.column().classes("w-full gap-3")
+                grid = ui.column().classes("w-full gap-3 items-center")
 
-            def refresh() -> None:
-                grid.clear()
-                projects = self._home.list(category=selected["category"])
-                with grid:
-                    if not projects:
-                        ui.label("No projects yet.").classes("text-grey-7")
-                        return
-                    with ui.row().classes("w-full gap-4 flex-wrap"):
-                        for project in projects:
-                            self._render_project_card(project)
+                def refresh() -> None:
+                    grid.clear()
+                    projects = self._home.list(category=selected["category"])
+                    with grid:
+                        if not projects:
+                            ui.label("No projects yet.").classes("text-grey-7")
+                            return
+                        with ui.row().classes("w-full gap-4 flex-wrap justify-center max-w-7xl"):
+                            for project in projects:
+                                self._render_project_card(project)
 
-            refresh()
+                refresh()
 
     def _render_project_card(self, project: Project) -> None:
         with ui.card().classes("w-80"):
