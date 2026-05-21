@@ -47,10 +47,16 @@ class ProjectService:
         self._db = database
         self._project_dao = project_dao
 
-    def list(self, category: Optional[Category] = None) -> List[Project]:
-        """Return projects newest-first, optionally filtered by category."""
+    def list(
+        self,
+        category: Optional[Category] = None,
+        owner_id: Optional[int] = None,
+    ) -> List[Project]:
+        """Return projects newest-first, optionally filtered by category and/or owner."""
         with self._db.session_scope() as session:
-            return self._project_dao.list_ordered(session, category=category)
+            return self._project_dao.list_ordered(
+                session, category=category, owner_id=owner_id
+            )
 
     def get(self, project_id: int) -> Project:
         """Fetch one project by id or raise :class:`NotFoundError`."""

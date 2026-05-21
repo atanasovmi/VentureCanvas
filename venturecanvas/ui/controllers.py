@@ -134,6 +134,11 @@ class ProjectController:
             project_id=project_id, caller_user_id=caller_id
         )
 
+    def list_mine(self) -> List[Project]:
+        """Return projects owned by the logged-in user, newest first."""
+        user_id = self._require_user_id()
+        return self._project_service.list(owner_id=user_id)
+
     def is_owner(self, project: Project) -> bool:
         """True iff the currently-logged-in user owns *project*."""
         current = self._session.current_user_id()

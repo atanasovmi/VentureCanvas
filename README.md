@@ -19,7 +19,7 @@ VentureCanvas solves exactly this problem: a small community gallery where every
 
 ## 1 · User Stories 
 
-Twelve features, twelve user stories — one per row in §4.
+Thirteen features, thirteen user stories — one per row in §4.
 
 | # | Story |
 |---|---|
@@ -35,6 +35,7 @@ Twelve features, twelve user stories — one per row in §4.
 | 10 | As a logged-in user, I want to **add a project to my collection** so that I can come back to it later. |
 | 11 | As a logged-in user, I want to **remove a project from my collection** so that my shortlist stays clean. |
 | 12 | As a logged-in user, I want to see **my collection plus a resource summary** so that I know which skills, tools, APIs and hardware my whole shortlist requires. |
+| 13 | As a logged-in user, I want to **see all my own projects in one place** so that I can quickly find and manage what I have built. |
 
 ---
 
@@ -137,6 +138,14 @@ Each use case maps one-to-one to the story of the same number.
 | **Pre-condition** | Authenticated session |
 | **Main flow** | Open `/collection` → `CollectionService.summary` splits each saved project's four comma-separated requirement fields → unions the tokens → returns sorted lists for Skills, Tools, APIs and Hardware → the UI renders them as chips next to the list of saved projects. |
 | **Post-condition** | The summary card reflects the current collection contents. |
+
+### UC-13 — View my projects
+| | |
+|---|---|
+| **Actor** | Logged-in user |
+| **Pre-condition** | Authenticated session |
+| **Main flow** | Click *My Projects* in the header → navigate to `/my-projects` → `ProjectController.list_mine()` calls `ProjectService.list(owner_id=user_id)` → only the caller's projects render as cards, newest first. If the list is empty, a *Create your first project* link to `/project/new` is shown instead. |
+| **Post-condition** | The page reflects the projects owned by the current user. |
 
 ---
 

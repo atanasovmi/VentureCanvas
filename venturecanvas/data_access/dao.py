@@ -66,12 +66,17 @@ class ProjectDAO(BaseDAO[Project]):
     model = Project
 
     def list_ordered(
-        self, session: Session, category: Optional[Category] = None
+        self,
+        session: Session,
+        category: Optional[Category] = None,
+        owner_id: Optional[int] = None,
     ) -> List[Project]:
-        """Return projects newest-first, optionally filtered by category."""
+        """Return projects newest-first, optionally filtered by category and/or owner."""
         stmt = select(Project).order_by(Project.created_at.desc())
         if category is not None:
             stmt = stmt.where(Project.category == category)
+        if owner_id is not None:
+            stmt = stmt.where(Project.owner_id == owner_id)
         return list(session.exec(stmt).all())
 
 

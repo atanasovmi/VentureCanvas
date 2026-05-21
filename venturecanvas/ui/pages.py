@@ -55,6 +55,7 @@ class Pages:
         ui.page("/project/new")(self._project_new_page)
         ui.page("/project/{project_id}")(self._project_detail_page)
         ui.page("/project/{project_id}/edit")(self._project_edit_page)
+        ui.page("/my-projects")(self._my_projects_page)
         ui.page("/collection")(self._collection_page)
 
     # ------------------------------------------------------------------ layout
@@ -68,6 +69,9 @@ class Pages:
                 )
                 ui.link("Home", "/").classes("no-underline text-white")
                 if self._auth.is_authenticated:
+                    ui.link("My Projects", "/my-projects").classes(
+                        "no-underline text-white"
+                    )
                     ui.link("Collection", "/collection").classes(
                         "no-underline text-white"
                     )
@@ -353,6 +357,27 @@ class Pages:
                 ui.navigate.to(f"/project/{project.id}")
 
             ui.button("Save", on_click=submit).props("color=primary")
+
+    # ------------------------------------------------------------------ my projects
+
+    def _my_projects_page(self) -> None:
+        self._header()
+        if not self._guard_authenticated():
+            return
+        projects = self._project.list_mine()
+        with ui.column().classes("w-full p-6 gap-4 items-start"):
+            ui.label("My projects").classes("text-2xl font-bold")
+            if not projects:
+                ui.label("You haven't created any projects yet.").classes(
+                    "text-grey-7"
+                )
+                ui.link("Create your first project", "/project/new").classes(
+                    "block mt-2"
+                )
+                return
+            with ui.row().classes("w-full gap-4 flex-wrap"):
+                for project in projects:
+                    self._render_project_card(project)
 
     # ------------------------------------------------------------------ collection
 
