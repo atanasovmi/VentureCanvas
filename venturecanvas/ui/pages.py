@@ -62,12 +62,11 @@ class Pages:
 
     def _header(self) -> None:
         """Shared top-bar; every page calls this once at the start."""
-        with ui.header().classes("items-center justify-center"):
-            with ui.row().classes("items-center justify-between w-full max-w-7xl px-6"):
-                with ui.row().classes("items-center gap-4"):
-                    ui.link("🚀 VentureCanvas", "/").classes(
-                        "text-2xl font-bold no-underline text-white"
-                    )
+        with ui.header().classes("items-center justify-between"):
+            with ui.row().classes("items-center gap-4"):
+                ui.link("🚀 VentureCanvas", "/").classes(
+                    "text-lg font-bold no-underline text-white"
+                )
                 ui.link("Home", "/").classes("no-underline text-white")
                 if self._auth.is_authenticated:
                     ui.link("My Projects", "/my-projects").classes(
@@ -103,51 +102,34 @@ class Pages:
     def _home_page(self) -> None:
         self._header()
         selected: dict[str, Optional[Category]] = {"category": None}
-        with ui.column().classes("w-full p-6 gap-4 items-center"):
-            # Hero section with centered title and background
-            with ui.column().classes("hero-section w-full items-center"):
-                ui.label("🚀 VentureCanvas").classes("hero-title")
-                ui.label(
-                    "A community-driven platform for innovation projects\n\n"
-                    "This web platform serves as a central hub where users can present, discover, "
-                    "and further develop their innovative projects.\n\n"
-                    "Users can upload their own projects and present them in detail, including descriptions, "
-                    "files, and additional information. At the same time, they can browse through other users' "
-                    "projects and find inspiration.\n\n"
-                    "A central component of the platform is interaction within the community: projects can be "
-                    "commented on, discussed, and rated. Users can purchase and download projects or associated "
-                    "files to reuse them or use them as a basis for their own developments.\n\n"
-                    "Overall, the platform combines presentation, collaboration, and monetization."
-                ).classes("hero-description whitespace-pre-wrap")
-            
-            with ui.column().classes("w-full items-center px-6 gap-4"):
-                ui.label("Discover innovation projects").classes("text-2xl font-bold")
-                
-                with ui.row().classes("gap-2 items-center flex-wrap justify-center"):
-                    def select(cat: Optional[Category]) -> None:
-                        selected["category"] = cat
-                        refresh()
+        with ui.column().classes("w-full p-6 gap-4 items-start"):
+            ui.label("Discover innovation projects").classes("text-2xl font-bold")
 
-                    ui.button("All", on_click=lambda: select(None)).props("outline")
-                    for cat in self._home.available_categories():
-                        ui.button(
-                            cat.value, on_click=lambda c=cat: select(c)
-                        ).props("outline")
+            with ui.row().classes("gap-2 items-center"):
+                def select(cat: Optional[Category]) -> None:
+                    selected["category"] = cat
+                    refresh()
 
-                grid = ui.column().classes("w-full gap-3 items-center")
+                ui.button("All", on_click=lambda: select(None)).props("outline")
+                for cat in self._home.available_categories():
+                    ui.button(
+                        cat.value, on_click=lambda c=cat: select(c)
+                    ).props("outline")
 
-                def refresh() -> None:
-                    grid.clear()
-                    projects = self._home.list(category=selected["category"])
-                    with grid:
-                        if not projects:
-                            ui.label("No projects yet.").classes("text-grey-7")
-                            return
-                        with ui.row().classes("w-full gap-4 flex-wrap justify-center max-w-7xl"):
-                            for project in projects:
-                                self._render_project_card(project)
+            grid = ui.column().classes("w-full gap-3")
 
-                refresh()
+            def refresh() -> None:
+                grid.clear()
+                projects = self._home.list(category=selected["category"])
+                with grid:
+                    if not projects:
+                        ui.label("No projects yet.").classes("text-grey-7")
+                        return
+                    with ui.row().classes("w-full gap-4 flex-wrap"):
+                        for project in projects:
+                            self._render_project_card(project)
+
+            refresh()
 
     def _render_project_card(self, project: Project) -> None:
         with ui.card().classes("w-80"):
@@ -281,20 +263,36 @@ class Pages:
         self._header()
         if not self._guard_authenticated():
             return
-        with ui.card().classes("max-w-2xl mx-auto mt-8 p-6"):
-            ui.label("New project").classes("text-xl font-bold mb-2")
-            title = ui.input("Title").classes("w-full")
-            description = ui.textarea("Description").classes("w-full")
-            category = ui.select(
-                {c.value: c.value for c in self._home.available_categories()},
-                label="Category",
-            ).classes("w-full")
-            skills = ui.input("Required skills (comma separated)").classes("w-full")
-            tools = ui.input("Required tools (comma separated)").classes("w-full")
-            apis = ui.input("Required APIs (comma separated)").classes("w-full")
-            hardware = ui.input("Required hardware (comma separated)").classes(
-                "w-full"
+        with ui.card().classes("w-full max-w-4xl mx-auto mt-8 p-8"):
+            ui.label("New project").classes("text-2xl font-bold mb-4")
+
+            with ui.row().classes("w-full gap-4 items-start"):
+                title = ui.input("Title").classes("flex-grow")
+                category = ui.select(
+                    {c.value: c.value for c in self._home.available_categories()},
+                    label="Category",
+                ).classes("w-48")
+
+            description = ui.textarea("Description").props(
+                "rows=4 autogrow"
+            ).classes("w-full mt-2")
+
+            ui.label("Requirements").classes(
+                "text-sm font-semibold mt-4 text-grey-7"
             )
+            with ui.grid(columns=2).classes("w-full gap-x-4 gap-y-0"):
+                skills = ui.input(
+                    "Skills", placeholder="e.g. Python, MQTT"
+                ).classes("w-full")
+                tools = ui.input(
+                    "Tools", placeholder="e.g. ESP32, Mosquitto"
+                ).classes("w-full")
+                apis = ui.input(
+                    "APIs", placeholder="e.g. OpenAI"
+                ).classes("w-full")
+                hardware = ui.input(
+                    "Hardware", placeholder="e.g. Sensor, OLED"
+                ).classes("w-full")
 
             def submit() -> None:
                 if not category.value:
@@ -316,7 +314,8 @@ class Pages:
                 ui.notify("Project created.", type="positive")
                 ui.navigate.to(f"/project/{project.id}")
 
-            ui.button("Create", on_click=submit).props("color=primary")
+            with ui.row().classes("w-full justify-end gap-2 mt-6"):
+                ui.button("Create", on_click=submit).props("color=primary")
 
     def _project_edit_page(self, project_id: int) -> None:
         self._header()
@@ -332,29 +331,45 @@ class Pages:
             ui.navigate.to(f"/project/{project_id}")
             return
 
-        with ui.card().classes("max-w-2xl mx-auto mt-8 p-6"):
-            ui.label(f"Edit: {project.title}").classes("text-xl font-bold mb-2")
-            title = ui.input("Title", value=project.title).classes("w-full")
+        with ui.card().classes("w-full max-w-4xl mx-auto mt-8 p-8"):
+            ui.label(f"Edit: {project.title}").classes("text-2xl font-bold mb-4")
+
+            with ui.row().classes("w-full gap-4 items-start"):
+                title = ui.input("Title", value=project.title).classes("flex-grow")
+                category = ui.select(
+                    {c.value: c.value for c in self._home.available_categories()},
+                    label="Category",
+                    value=project.category.value,
+                ).classes("w-48")
+
             description = ui.textarea(
                 "Description", value=project.description
-            ).classes("w-full")
-            category = ui.select(
-                {c.value: c.value for c in self._home.available_categories()},
-                label="Category",
-                value=project.category.value,
-            ).classes("w-full")
-            skills = ui.input(
-                "Required skills (comma separated)", value=project.required_skills
-            ).classes("w-full")
-            tools = ui.input(
-                "Required tools (comma separated)", value=project.required_tools
-            ).classes("w-full")
-            apis = ui.input(
-                "Required APIs (comma separated)", value=project.required_apis
-            ).classes("w-full")
-            hardware = ui.input(
-                "Required hardware (comma separated)", value=project.required_hardware
-            ).classes("w-full")
+            ).props("rows=4 autogrow").classes("w-full mt-2")
+
+            ui.label("Requirements").classes(
+                "text-sm font-semibold mt-4 text-grey-7"
+            )
+            with ui.grid(columns=2).classes("w-full gap-x-4 gap-y-0"):
+                skills = ui.input(
+                    "Skills",
+                    value=project.required_skills,
+                    placeholder="e.g. Python, MQTT",
+                ).classes("w-full")
+                tools = ui.input(
+                    "Tools",
+                    value=project.required_tools,
+                    placeholder="e.g. ESP32, Mosquitto",
+                ).classes("w-full")
+                apis = ui.input(
+                    "APIs",
+                    value=project.required_apis,
+                    placeholder="e.g. OpenAI",
+                ).classes("w-full")
+                hardware = ui.input(
+                    "Hardware",
+                    value=project.required_hardware,
+                    placeholder="e.g. Sensor, OLED",
+                ).classes("w-full")
 
             def submit() -> None:
                 try:
@@ -374,7 +389,8 @@ class Pages:
                 ui.notify("Project updated.", type="positive")
                 ui.navigate.to(f"/project/{project.id}")
 
-            ui.button("Save", on_click=submit).props("color=primary")
+            with ui.row().classes("w-full justify-end gap-2 mt-6"):
+                ui.button("Save", on_click=submit).props("color=primary")
 
     # ------------------------------------------------------------------ my projects
 
