@@ -103,32 +103,28 @@ class Pages:
         self._header()
         selected: dict[str, Optional[Category]] = {"category": None}
         with ui.column().classes("w-full p-6 gap-4 items-start"):
-            # Add the new hero/description section
-            ui.label("A community-driven platform for innovation projects").classes("text-3xl font-bold mb-4")
-            ui.label(
-                "This web platform serves as a central hub where users can present, discover, "
-                "and further develop their innovative projects.\n\n"
-                "Users can upload their own projects and present them in detail, including descriptions, "
-                "files, and additional information. At the same time, they can browse through other users' "
-                "projects and find inspiration.\n\n"
-            ).classes("text-base text-grey-8 mb-6 whitespace-pre-wrap max-w-4xl")
-            
+            with ui.column().classes("w-full items-center text-center py-8"):
+                ui.label("Venture canvas 🚀").classes("text-4xl font-bold")
+                ui.label(
+                    "A community-driven platform for innovation projects\n"
+                    "This web platform serves as a central hub where users can present, "
+                    "discover, and further develop their innovative projects."
+                ).classes("text-base text-grey-7 max-w-2xl mt-2 whitespace-pre-line")
             ui.label("Discover innovation projects").classes("text-2xl font-bold")
-
+    
             with ui.row().classes("gap-2 items-center"):
                 def select(cat: Optional[Category]) -> None:
                     selected["category"] = cat
                     refresh()
-
+    
                 ui.button("All", on_click=lambda: select(None)).props("outline")
                 for cat in self._home.available_categories():
                     ui.button(
                         cat.value, on_click=lambda c=cat: select(c)
                     ).props("outline")
-
+    
             grid = ui.column().classes("w-full gap-3")
-
-
+    
             def refresh() -> None:
                 grid.clear()
                 projects = self._home.list(category=selected["category"])
@@ -139,7 +135,7 @@ class Pages:
                     with ui.row().classes("w-full gap-4 flex-wrap"):
                         for project in projects:
                             self._render_project_card(project)
-
+    
             refresh()
 
     def _render_project_card(self, project: Project) -> None:
