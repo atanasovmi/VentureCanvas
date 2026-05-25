@@ -148,7 +148,7 @@ Each use case maps one-to-one to the story of the same number.
 | **Post-condition** | The page reflects the projects owned by the current user. |
 
 
-# Use Case diagramm
+### Use Case diagramm
 
 <img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/4f47728b-7ca4-4e50-b16c-ef072d3707bb" />
 
