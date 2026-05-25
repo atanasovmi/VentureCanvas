@@ -107,10 +107,6 @@ class Pages:
                 "Users can upload their own projects and present them in detail, including descriptions, "
                 "files, and additional information. At the same time, they can browse through other users' "
                 "projects and find inspiration.\n\n"
-                "A central component of the platform is interaction within the community: projects can be "
-                "commented on, discussed, and rated. Users can purchase and download projects or associated "
-                "files to reuse them or use them as a basis for their own developments. Overall, the platform "
-                "combines presentation, collaboration, and monetization."
             ).classes("text-base text-grey-8 mb-6 whitespace-pre-wrap max-w-4xl")
             
             ui.label("Discover innovation projects").classes("text-2xl font-bold")
