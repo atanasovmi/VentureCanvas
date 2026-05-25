@@ -195,8 +195,13 @@ on top. Arrows point downward — no upward dependencies.
 | **Facade** | `data_access/db.py::Database` — hides the SQLModel engine behind `session_scope` + `init_schema_and_seed` |
 | **Composition Root** | `application.py::VentureCanvasApplication` — builds the whole object graph from one constructor |
 
-UML class diagram: `docs/architecture-diagrams/uml_class_architecture.png`.
-Use-case diagram: `docs/architecture-diagrams/uml_use_case_diagram.png`.
+### UML class diagram:
+<img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/e1159698-75cd-440f-b31f-3eb0de70c2c4" />
+
+
+### Use-case diagram:
+<img width="549" height="589" alt="image" src="https://github.com/user-attachments/assets/26dd46f1-bf74-437a-86d8-71153fb7585e" />
+
 
 ---
 
