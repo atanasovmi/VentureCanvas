@@ -101,6 +101,12 @@ class Pages:
 
     def _home_page(self) -> None:
         self._header()
+        with ui.column().classes("w-full items-center pt-8 pb-4"):
+            ui.label("Venture canvas 🚀").classes("text-4xl font-bold")
+            ui.label(
+                "A community-driven platform for innovation projects.\n"
+                "This web platform serves as a central hub where users can present, discover, and further develop their innovative projects."
+            ).classes("text-lg text-center max-w-2xl text-gray-700")        
         selected: dict[str, Optional[Category]] = {"category": None}
         with ui.column().classes("w-full p-6 gap-4 items-start"):
             ui.label("Discover innovation projects").classes("text-2xl font-bold")
