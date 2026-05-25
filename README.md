@@ -148,8 +148,6 @@ Each use case maps one-to-one to the story of the same number.
 | **Post-condition** | The page reflects the projects owned by the current user. |
 
 
-### Use Case diagramm
-
 
 ---
 
