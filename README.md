@@ -148,6 +148,11 @@ Each use case maps one-to-one to the story of the same number.
 | **Post-condition** | The page reflects the projects owned by the current user. |
 
 
+### Use-case diagram:
+
+<img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/4f47728b-7ca4-4e50-b16c-ef072d3707bb" />
+
+
 
 ---
 
@@ -192,12 +197,8 @@ on top. Arrows point downward — no upward dependencies.
 | **Composition Root** | `application.py::VentureCanvasApplication` — builds the whole object graph from one constructor |
 
 ### UML class diagram:
+
 <img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/e1159698-75cd-440f-b31f-3eb0de70c2c4" />
-
-
-### Use-case diagram:
-
-<img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/4f47728b-7ca4-4e50-b16c-ef072d3707bb" />
 
 
 ---
