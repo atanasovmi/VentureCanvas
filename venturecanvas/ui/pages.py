@@ -101,16 +101,19 @@ class Pages:
 
     def _home_page(self) -> None:
         self._header()
-        with ui.column().classes("w-full items-center pt-8 pb-4"):
-            ui.label("Venture canvas 🚀").classes("text-4xl font-bold")
-            ui.label(
-                "A community-driven platform for innovation projects.\n"
-                "This web platform serves as a central hub where users can present, discover, and further develop their innovative projects."
-            ).classes("text-lg text-center max-w-2xl text-gray-700")        
         selected: dict[str, Optional[Category]] = {"category": None}
         with ui.column().classes("w-full p-6 gap-4 items-start"):
+            # Add the new hero/description section
+            ui.label("A community-driven platform for innovation projects").classes("text-3xl font-bold mb-4")
+            ui.label(
+                "This web platform serves as a central hub where users can present, discover, "
+                "and further develop their innovative projects.\n\n"
+                "Users can upload their own projects and present them in detail, including descriptions, "
+                "files, and additional information. At the same time, they can browse through other users' "
+                "projects and find inspiration.\n\n"
+            ).classes("text-base text-grey-8 mb-6 whitespace-pre-wrap max-w-4xl")
+            
             ui.label("Discover innovation projects").classes("text-2xl font-bold")
-
 
             with ui.row().classes("gap-2 items-center"):
                 def select(cat: Optional[Category]) -> None:
@@ -124,6 +127,7 @@ class Pages:
                     ).props("outline")
 
             grid = ui.column().classes("w-full gap-3")
+
 
             def refresh() -> None:
                 grid.clear()
