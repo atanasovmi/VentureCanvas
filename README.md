@@ -150,8 +150,6 @@ Each use case maps one-to-one to the story of the same number.
 
 ### Use Case diagramm
 
-<img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/4f47728b-7ca4-4e50-b16c-ef072d3707bb" />
-
 
 ---
 
@@ -200,7 +198,8 @@ on top. Arrows point downward — no upward dependencies.
 
 
 ### Use-case diagram:
-<img width="549" height="589" alt="image" src="https://github.com/user-attachments/assets/26dd46f1-bf74-437a-86d8-71153fb7585e" />
+
+<img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/4f47728b-7ca4-4e50-b16c-ef072d3707bb" />
 
 
 ---
@@ -215,7 +214,9 @@ users  ─1:N─> projects  ─1:N─>  collection_items  <─1:1─  users
                                 (unique user_id,project_id)
 ```
 
-ER diagram: `docs/architecture-diagrams/er_diagram.png`.
+### ER diagram:
+
+<img width="549" height="589" alt="image" src="https://github.com/user-attachments/assets/26dd46f1-bf74-437a-86d8-71153fb7585e" />
 
 Every column carries an explicit `Field(...)` declaration
 (`min_length`, `max_length`, `unique`, `index`, `foreign_key`) so the
