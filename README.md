@@ -217,6 +217,7 @@ users  ─1:N─> projects  ─1:N─>  collection_items  <─1:1─  users
 
 <img width="549" height="589" alt="image" src="https://github.com/user-attachments/assets/26dd46f1-bf74-437a-86d8-71153fb7585e" />
 
+
 Every column carries an explicit `Field(...)` declaration
 (`min_length`, `max_length`, `unique`, `index`, `foreign_key`) so the
 schema documents its own constraints and the type system stops
