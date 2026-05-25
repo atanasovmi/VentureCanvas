@@ -147,6 +147,12 @@ Each use case maps one-to-one to the story of the same number.
 | **Main flow** | Click *My Projects* in the header → navigate to `/my-projects` → `ProjectController.list_mine()` calls `ProjectService.list(owner_id=user_id)` → only the caller's projects render as cards, newest first. If the list is empty, a *Create your first project* link to `/project/new` is shown instead. |
 | **Post-condition** | The page reflects the projects owned by the current user. |
 
+
+# Use Case diagramm
+
+<img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/4f47728b-7ca4-4e50-b16c-ef072d3707bb" />
+
+
 ---
 
 ## 3 · Architecture
