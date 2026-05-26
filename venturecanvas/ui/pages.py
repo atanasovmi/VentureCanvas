@@ -100,14 +100,14 @@ class Pages:
 
 
 
-        # ------------------------------------------------------------------ landing page
+    # ------------------------------------------------------------------ landing page
 
     def _landing_page(self) -> None:
         """Marketing-style landing page."""
-        # Hero background
-        with ui.column().classes("w-full min-h-screen bg-gradient-to-b from-blue-900 to-blue-700"):
-            # Minimal top navigation for landing page
-            with ui.row().classes("w-full items-center justify-between px-6 py-4"):
+        # Main container with full height and gradient background
+        with ui.column().classes("w-full h-screen bg-gradient-to-b from-blue-900 to-blue-700"):
+            # Top navigation bar
+            with ui.row().classes("w-full items-center justify-between px-6 py-4 flex-shrink-0"):
                 ui.link("🚀 VentureCanvas", "/").classes(
                     "text-2xl font-bold no-underline text-white"
                 )
@@ -120,9 +120,9 @@ class Pages:
                     else:
                         ui.link("Login", "/login").classes("no-underline text-white font-semibold")
 
-            # Centered hero content
-            with ui.column().classes("flex-grow flex items-center justify-center px-6"):
-                with ui.column().classes("max-w-2xl text-center gap-8"):
+            # Centered hero content - takes remaining vertical space and centers content
+            with ui.column().classes("flex-grow flex items-center justify-center w-full px-6"):
+                with ui.column().classes("max-w-2xl text-center gap-8 w-full"):
                     # Main headline
                     ui.label("🚀 VentureCanvas").classes(
                         "text-5xl font-bold text-white drop-shadow-lg"
@@ -142,10 +142,10 @@ class Pages:
                         "text-lg text-blue-50 leading-relaxed mx-auto max-w-xl"
                     )
 
-                    # CTA Buttons
-                    with ui.row().classes("gap-6 justify-center mt-8"):
-                        ui.button("See More Projects", on_click=lambda: ui.navigate.to("/home")).props(
-                            "color=white size=lg"
+                    # CTA Buttons - both with outline style
+                    with ui.row().classes("gap-6 justify-center mt-8 w-full"):
+                        ui.button("Discover Projects", on_click=lambda: ui.navigate.to("/home")).props(
+                            "outline color=white size=lg"
                         ).classes("px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-shadow")
 
                         ui.button("Register Here", on_click=lambda: ui.navigate.to("/register")).props(
