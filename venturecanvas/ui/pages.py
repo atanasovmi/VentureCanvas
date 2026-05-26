@@ -105,7 +105,7 @@ class Pages:
     def _landing_page(self) -> None:
         """Marketing-style landing page."""
         # Main container with full height and gradient background
-        with ui.column().classes("w-full h-screen bg-gradient-to-b from-blue-900 to-blue-700"):
+        with ui.column().classes("w-full h-screen bg-gradient-to-b from-blue-900 to-blue-700 flex flex-col"):
             # Top navigation bar
             with ui.row().classes("w-full items-center justify-between px-6 py-4 flex-shrink-0"):
                 ui.link("🚀 VentureCanvas", "/").classes(
@@ -120,17 +120,17 @@ class Pages:
                     else:
                         ui.link("Login", "/login").classes("no-underline text-white font-semibold")
 
-            # Centered hero content - takes remaining vertical space and centers content
-            with ui.column().classes("flex-grow flex items-center justify-center w-full px-6"):
-                with ui.column().classes("max-w-2xl text-center gap-8 w-full"):
+            # Centered hero content - uses flex to center both horizontally and vertically
+            with ui.column().classes("flex-1 flex items-center justify-center w-full px-6"):
+                with ui.column().classes("w-full max-w-2xl gap-8 text-center items-center"):
                     # Main headline
                     ui.label("🚀 VentureCanvas").classes(
-                        "text-5xl font-bold text-white drop-shadow-lg"
+                        "text-5xl font-bold text-white drop-shadow-lg w-full text-center"
                     )
 
                     # Subheading
                     ui.label("Your Innovation Marketplace").classes(
-                        "text-2xl text-blue-100 font-light"
+                        "text-2xl text-blue-100 font-light w-full text-center"
                     )
 
                     # Description
@@ -139,11 +139,11 @@ class Pages:
                         "This web platform serves as a central hub where users can present, "
                         "discover, and further develop their innovative projects."
                     ).classes(
-                        "text-lg text-blue-50 leading-relaxed mx-auto max-w-xl"
+                        "text-lg text-blue-50 leading-relaxed w-full text-center"
                     )
 
                     # CTA Buttons - both with outline style
-                    with ui.row().classes("gap-6 justify-center mt-8 w-full"):
+                    with ui.row().classes("gap-6 justify-center w-full mt-8"):
                         ui.button("Discover Projects", on_click=lambda: ui.navigate.to("/home")).props(
                             "outline color=white size=lg"
                         ).classes("px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-shadow")
@@ -154,7 +154,7 @@ class Pages:
 
                     # Trust/stats line
                     ui.label("Join 100+ innovators building the future together").classes(
-                        "text-sm text-blue-200 mt-6 italic"
+                        "text-sm text-blue-200 mt-6 italic w-full text-center"
                     )
 
     # ------------------------------------------------------------------ home
