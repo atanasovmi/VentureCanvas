@@ -704,21 +704,12 @@ MIT — see [`LICENSE`](./LICENSE).
 
 <div align="center">
 
-<sub>
+<sub><b>VentureCanvas</b> &nbsp;·&nbsp; MIT-licensed &nbsp;·&nbsp; <i>SHARE IDEAS · BUILD TOGETHER · CREATE IMPACT</i></sub>
 
-**VentureCanvas** &nbsp;·&nbsp; MIT-licensed &nbsp;·&nbsp; <i>SHARE IDEAS · BUILD TOGETHER · CREATE IMPACT</i>
+<sub>Built for the <b>Object-Oriented Programming</b> module &nbsp;·&nbsp; <b>Frühlingssemester 2026 (FS26)</b></sub>
 
-<br/><br/>
+<sub><b>FHNW</b> — University of Applied Sciences and Arts Northwestern Switzerland</sub>
 
-Built for the <b>Object-Oriented Programming</b> module · <b>Frühlingssemester 2026 (FS26)</b>
-<br/>
-<b>FHNW</b> — University of Applied Sciences and Arts Northwestern Switzerland
-<br/><br/>
-<i>Lecturers</i> &nbsp;·&nbsp;
-<a href="https://www.fhnw.ch/de/wirtschaft/ueber-uns/portrait-organisation/personen/hermann-grieder">Hermann Grieder</a>
-&nbsp;·&nbsp;
-<a href="https://www.fhnw.ch/de/wirtschaft/ueber-uns/portrait-organisation/personen/felix-haerer">Felix Härer</a>
-
-</sub>
+<sub><i>Lecturers</i> &nbsp;·&nbsp; <a href="https://www.fhnw.ch/de/wirtschaft/ueber-uns/portrait-organisation/personen/hermann-grieder">Hermann Grieder</a> &nbsp;·&nbsp; <a href="https://www.fhnw.ch/de/wirtschaft/ueber-uns/portrait-organisation/personen/felix-haerer">Felix Härer</a></sub>
 
 </div>
