@@ -198,7 +198,7 @@ on top. Arrows point downward — no upward dependencies.
 
 ### UML class diagram:
 
-<img width="775" height="993" alt="image" src="https://github.com/user-attachments/assets/e1159698-75cd-440f-b31f-3eb0de70c2c4" />
+<img width="1892" height="1151" alt="image" src="https://github.com/user-attachments/assets/a6c35443-48ec-4506-a926-667f7d1edb61" />
 
 
 ---
