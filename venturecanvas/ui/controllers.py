@@ -70,6 +70,31 @@ class HomeController:
     def list(self, category: Optional[Category] = None) -> List[Project]:
         return self._project_service.list(category=category)
 
+    def list_filtered(
+        self,
+        *,
+        category: Optional[Category] = None,
+        search: str = "",
+        sort: str = "newest",
+    ) -> List[Project]:
+        """Browse query for the filtered home view (chip and/or search active)."""
+        return self._project_service.list_filtered(
+            category=category, search=search, sort=sort
+        )
+
+    def newest_per_category(
+        self, limit_per_section: int = 3
+    ) -> Dict[Category, List[Project]]:
+        """For the magazine layout: newest <= ``limit_per_section`` projects per category."""
+        return {
+            cat: self._project_service.list(category=cat)[:limit_per_section]
+            for cat in self.available_categories()
+        }
+
+    def count_in_category(self, category: Category) -> int:
+        """Used by the 'See all N →' link on the magazine sections."""
+        return len(self._project_service.list(category=category))
+
     def available_categories(self) -> List[Category]:
         """Return every category for the filter chips (order matches Plan §3)."""
         return [

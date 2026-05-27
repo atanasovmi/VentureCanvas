@@ -58,6 +58,34 @@ class ProjectService:
                 session, category=category, owner_id=owner_id
             )
 
+    def list_filtered(
+        self,
+        *,
+        category: Optional[Category] = None,
+        search: str = "",
+        sort: str = "newest",
+        owner_id: Optional[int] = None,
+    ) -> List[Project]:
+        """Browse-page query with case-insensitive search and a sort knob.
+
+        Filtering happens in Python on top of :meth:`list`. At demo scale
+        (~50 rows) the cost is microseconds; pushing search into SQL is
+        a localised change behind this method when the row count grows.
+        """
+        rows = self.list(category=category, owner_id=owner_id)
+        if search:
+            q = search.strip().lower()
+            if q:
+                rows = [
+                    p for p in rows
+                    if q in p.title.lower() or q in p.description.lower()
+                ]
+        if sort == "oldest":
+            rows = list(reversed(rows))
+        elif sort == "az":
+            rows = sorted(rows, key=lambda p: p.title.lower())
+        return rows
+
     def get(self, project_id: int) -> Project:
         """Fetch one project by id or raise :class:`NotFoundError`."""
         with self._db.session_scope() as session:

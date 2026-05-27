@@ -161,34 +161,139 @@ class Pages:
 
     def _home_page(self) -> None:
         self._header()
-        selected: dict[str, Optional[Category]] = {"category": None}
+        # Load-more is contextual: the All view (or any search across
+        # everything) bumps in big chunks so two clicks reveal the full
+        # ~80 catalog. A picked category starts with a tight 2x4 grid and
+        # reveals slowly, four cards at a time.
+        ALL_INITIAL, ALL_CHUNK = 12, 36
+        CAT_INITIAL, CAT_CHUNK = 8, 4
+        state = {
+            "category": None,        # Optional[Category]; None = show all
+            "search": "",
+            "sort": "newest",        # "newest" | "oldest" | "az"
+            "visible": ALL_INITIAL,  # cards currently shown by the load-more grid
+        }
+
+        def initial_size() -> int:
+            return CAT_INITIAL if state["category"] is not None else ALL_INITIAL
+
+        def chunk_size() -> int:
+            return CAT_CHUNK if state["category"] is not None else ALL_CHUNK
+
         with ui.column().classes("w-full p-6 gap-4 items-start"):
             ui.label("Discover innovation projects").classes("text-2xl font-bold")
 
-
-            with ui.row().classes("gap-2 items-center"):
-                def select(cat: Optional[Category]) -> None:
-                    selected["category"] = cat
+            # Toolbar — search + sort. Lives outside the refreshable region so
+            # typing never steals focus from the input.
+            with ui.row().classes("w-full gap-3 items-center"):
+                def on_search_change(e) -> None:
+                    new_val = (e.value or "").strip()
+                    if new_val == state["search"]:
+                        return
+                    state["search"] = new_val
+                    state["visible"] = initial_size()
                     refresh()
 
-                ui.button("All", on_click=lambda: select(None)).props("outline")
-                for cat in self._home.available_categories():
-                    ui.button(
-                        cat.value, on_click=lambda c=cat: select(c)
-                    ).props("outline")
+                search_input = ui.input(
+                    placeholder="Search title or description…",
+                    on_change=on_search_change,
+                ).props(
+                    "clearable dense outlined debounce=300"
+                ).classes("flex-grow max-w-md")
 
-            grid = ui.column().classes("w-full gap-3")
+                def on_sort_change(e) -> None:
+                    state["sort"] = e.value
+                    state["visible"] = initial_size()
+                    refresh()
+
+                ui.select(
+                    {"newest": "Newest", "oldest": "Oldest", "az": "A–Z"},
+                    value="newest",
+                    on_change=on_sort_change,
+                ).props("dense outlined").classes("w-40")
+
+            results = ui.column().classes("w-full gap-4")
+
+            def select_cat(target) -> None:
+                state["category"] = target
+                state["visible"] = initial_size()
+                refresh()
+
+            def render_chip(label: str, target) -> None:
+                is_active = state["category"] == target
+                props = (
+                    "unelevated no-caps color=primary"
+                    if is_active
+                    else "outline no-caps color=grey-8"
+                )
+                ui.button(
+                    label, on_click=lambda t=target: select_cat(t)
+                ).props(props).classes("px-2")
+
+            def clear_filters() -> None:
+                state["category"] = None
+                state["search"] = ""
+                state["visible"] = ALL_INITIAL
+                search_input.value = ""
+                refresh()
+
+            def render_grid() -> None:
+                rows = self._home.list_filtered(
+                    category=state["category"],
+                    search=state["search"],
+                    sort=state["sort"],
+                )
+                total = len(rows)
+                if total == 0:
+                    with ui.column().classes(
+                        "w-full items-center py-12 gap-2"
+                    ):
+                        ui.label(
+                            "No projects match your search."
+                        ).classes("text-grey-7")
+                        ui.button(
+                            "Clear filters", on_click=clear_filters
+                        ).props("flat no-caps color=primary")
+                    return
+
+                visible = min(state["visible"], total)
+                # Responsive grid: 1 col on phone, 2 on tablet, 3 on small
+                # desktop, 4 on wide screens — same look for All and filtered.
+                with ui.element("div").classes(
+                    "w-full grid grid-cols-1 sm:grid-cols-2 "
+                    "md:grid-cols-3 lg:grid-cols-4 gap-4"
+                ):
+                    for p in rows[:visible]:
+                        self._render_grid_card(p)
+
+                with ui.row().classes(
+                    "w-full items-center justify-center gap-3 mt-2"
+                ):
+                    ui.label(
+                        f"Showing {visible} of {total}"
+                    ).classes("text-sm text-grey-7")
+                    if visible < total:
+                        def load_more() -> None:
+                            state["visible"] = min(
+                                state["visible"] + chunk_size(), total
+                            )
+                            refresh()
+                        ui.button(
+                            "Load more", on_click=load_more
+                        ).props(
+                            "flat no-caps color=grey-7"
+                        ).classes("text-sm")
 
             def refresh() -> None:
-                grid.clear()
-                projects = self._home.list(category=selected["category"])
-                with grid:
-                    if not projects:
-                        ui.label("No projects yet.").classes("text-grey-7")
-                        return
-                    with ui.row().classes("w-full gap-4 flex-wrap"):
-                        for project in projects:
-                            self._render_project_card(project)
+                results.clear()
+                with results:
+                    with ui.row().classes(
+                        "gap-2 items-center flex-wrap mb-2"
+                    ):
+                        render_chip("All", None)
+                        for cat in self._home.available_categories():
+                            render_chip(cat.value, cat)
+                    render_grid()
 
             refresh()
 
@@ -203,6 +308,29 @@ class Pages:
                 "View",
                 on_click=lambda pid=project.id: ui.navigate.to(f"/project/{pid}"),
             ).props("flat color=primary")
+
+    def _render_grid_card(self, project: Project) -> None:
+        """Stretch-to-cell card used by the home-page grid.
+
+        Carries a small dark category pill at the top so the All view
+        (which mixes categories) stays scannable without per-section
+        headers. ``flex-grow`` on the description keeps all "View"
+        buttons aligned at the bottom of their row.
+        """
+        with ui.card().classes("w-full h-full flex flex-col"):
+            ui.label(project.category.value).classes(
+                "self-start text-xs bg-grey-8 text-white "
+                "rounded-full px-3 py-1 font-medium"
+            )
+            ui.label(project.title).classes("text-lg font-bold")
+            ui.label(
+                project.description[:140]
+                + ("…" if len(project.description) > 140 else "")
+            ).classes("text-sm text-grey-8 flex-grow")
+            ui.button(
+                "View",
+                on_click=lambda pid=project.id: ui.navigate.to(f"/project/{pid}"),
+            ).props("flat color=primary").classes("self-start")
 
     # ------------------------------------------------------------------ login / register
 
