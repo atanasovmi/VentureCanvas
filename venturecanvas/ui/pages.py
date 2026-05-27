@@ -49,7 +49,8 @@ class Pages:
 
     def register(self) -> None:
         """Attach every ``@ui.page`` to a bound method on this instance."""
-        ui.page("/")(self._home_page)
+        ui.page("/")(self._landing_page)  
+        ui.page("/home")(self._home_page)  
         ui.page("/login")(self._login_page)
         ui.page("/register")(self._register_page)
         ui.page("/project/new")(self._project_new_page)
@@ -64,10 +65,10 @@ class Pages:
         """Shared top-bar; every page calls this once at the start."""
         with ui.header().classes("items-center justify-between"):
             with ui.row().classes("items-center gap-4"):
-                ui.link("🚀 VentureCanvas", "/").classes(
+                ui.link("🚀 VentureCanvas", "/home").classes(
                     "text-lg font-bold no-underline text-white"
                 )
-                ui.link("Home", "/").classes("no-underline text-white")
+                ui.link("Home", "/home").classes("no-underline text-white")
                 if self._auth.is_authenticated:
                     ui.link("My Projects", "/my-projects").classes(
                         "no-underline text-white"
@@ -96,6 +97,65 @@ class Pages:
         self._auth.logout()
         ui.notify("Logged out.", type="info")
         ui.navigate.to("/")
+
+
+
+    # ------------------------------------------------------------------ landing page
+
+    def _landing_page(self) -> None:
+        """Marketing-style landing page."""
+        # Main container with full height and gradient background
+        with ui.column().classes("w-full h-screen bg-gradient-to-b from-blue-900 to-blue-700 flex flex-col"):
+            # Top navigation bar
+            with ui.row().classes("w-full items-center justify-between px-6 py-4 flex-shrink-0"):
+                ui.link("🚀 VentureCanvas", "/").classes(
+                    "text-2xl font-bold no-underline text-white"
+                )
+                with ui.row().classes("gap-3"):
+                    if self._auth.is_authenticated:
+                        ui.link("Dashboard", "/home").classes("no-underline text-white font-semibold")
+                        ui.button("Logout", on_click=self._handle_logout).props(
+                            "flat color=white"
+                        )
+                    else:
+                        ui.link("Login", "/login").classes("no-underline text-white font-semibold")
+
+            # Centered hero content - uses flex to center both horizontally and vertically
+            with ui.column().classes("flex-1 flex items-center justify-center w-full px-6"):
+                with ui.column().classes("w-full max-w-2xl gap-8 text-center items-center"):
+                    # Main headline
+                    ui.label("🚀 VentureCanvas").classes(
+                        "text-5xl font-bold text-white drop-shadow-lg w-full text-center"
+                    )
+
+                    # Subheading
+                    ui.label("Your Innovation Marketplace").classes(
+                        "text-2xl text-blue-100 font-light w-full text-center"
+                    )
+
+                    # Description
+                    ui.label(
+                        "A community-driven platform for innovation projects. "
+                        "This web platform serves as a central hub where users can present, "
+                        "discover, and further develop their innovative projects."
+                    ).classes(
+                        "text-lg text-blue-50 leading-relaxed w-full text-center"
+                    )
+
+                    # CTA Buttons - both with outline style
+                    with ui.row().classes("gap-6 justify-center w-full mt-8"):
+                        ui.button("Discover Projects", on_click=lambda: ui.navigate.to("/home")).props(
+                            "outline color=white size=lg"
+                        ).classes("px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-shadow")
+
+                        ui.button("Register Here", on_click=lambda: ui.navigate.to("/register")).props(
+                            "outline color=white size=lg"
+                        ).classes("px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-shadow")
+
+                    # Trust/stats line
+                    ui.label("Join 100+ innovators building the future together").classes(
+                        "text-sm text-blue-200 mt-6 italic w-full text-center"
+                    )
 
     # ------------------------------------------------------------------ home
 
@@ -160,7 +220,7 @@ class Pages:
                     ui.notify(str(exc), type="negative")
                     return
                 ui.notify("Logged in.", type="positive")
-                ui.navigate.to("/")
+                ui.navigate.to("/home")
 
             ui.button("Log in", on_click=submit).props("color=primary")
             ui.link("Need an account? Register", "/register").classes("block mt-3")
@@ -198,7 +258,7 @@ class Pages:
         except NotFoundError:
             with ui.column().classes("p-6"):
                 ui.label("Project not found.").classes("text-xl")
-                ui.link("← Back to home", "/")
+                ui.link("← Back to home", "/home")
             return
 
         with ui.column().classes("max-w-3xl mx-auto p-6 gap-3"):
@@ -258,7 +318,7 @@ class Pages:
             ui.notify(str(exc), type="warning")
             return
         ui.notify("Project deleted.", type="positive")
-        ui.navigate.to("/")
+        ui.navigate.to("/home")
 
     def _project_new_page(self) -> None:
         self._header()
