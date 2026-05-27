@@ -628,7 +628,7 @@ See `docs/ui-images/`:
 <tr>
 <td width="33%" align="center" valign="top">
 
-<img src="docs/Mihael.png" width="200" alt="Mihael" />
+<img src="docs/Mihael.png" width="260" alt="Mihael" />
 
 <h3>Mihael</h3>
 
@@ -639,7 +639,7 @@ See `docs/ui-images/`:
 </td>
 <td width="33%" align="center" valign="top">
 
-<img src="docs/Eva.png" width="200" alt="Eva" />
+<img src="docs/Eva.png" width="260" alt="Eva" />
 
 <h3>Eva</h3>
 
@@ -650,7 +650,7 @@ See `docs/ui-images/`:
 </td>
 <td width="33%" align="center" valign="top">
 
-<img src="docs/Minh.png" width="200" alt="Minh" />
+<img src="docs/Minh.png" width="260" alt="Minh" />
 
 <h3>Minh</h3>
 
