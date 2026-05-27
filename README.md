@@ -153,25 +153,62 @@ Create, edit and manage your own projects — pure Python, no JS toolchain.
 
 ## 1 · User Stories
 
-Thirteen features, thirteen user stories — one per row in §4.
+Thirteen features, thirteen user stories — one per row in §4. Click a group to expand its stories.
 
 > **Roles legend** &nbsp;·&nbsp; 👤 Visitor &nbsp;·&nbsp; 🔐 Logged-in user &nbsp;·&nbsp; 👑 Project owner
+
+<details>
+<summary><b>🔐 &nbsp;Account</b> &nbsp;—&nbsp; Stories 1-3 (Register · Log in · Log out)</summary>
+
+<br/>
 
 | # | Role | Story |
 |---|---|---|
 | 1 | 👤 | As a visitor, I want to **register an account** so that I can contribute and curate. |
 | 2 | 👤 | As a returning user, I want to **log in** so that my projects and collection are restored. |
 | 3 | 🔐 | As a logged-in user, I want to **log out** so that nobody else can use my browser session. |
+
+</details>
+
+<details>
+<summary><b>🔭 &nbsp;Browse & Detail</b> &nbsp;—&nbsp; Stories 4-6 (Browse · Filter · View detail)</summary>
+
+<br/>
+
+| # | Role | Story |
+|---|---|---|
 | 4 | 👤 | As any visitor, I want to **browse all projects** so that I can discover what others are building. |
 | 5 | 👤 | As any visitor, I want to **filter projects by category** (IoT · AI · Web · Mobile · Hardware) so that I can narrow the list to what interests me. |
 | 6 | 👤 | As any visitor, I want to **see a project's details** so that I understand what's required to build it. |
+
+</details>
+
+<details>
+<summary><b>📝 &nbsp;Project CRUD</b> &nbsp;—&nbsp; Stories 7-9 (Create · Edit · Delete)</summary>
+
+<br/>
+
+| # | Role | Story |
+|---|---|---|
 | 7 | 🔐 | As a logged-in user, I want to **create a project** so that the community can see what I'm working on. |
 | 8 | 👑 | As the owner of a project, I want to **edit** it so that I can keep its description current. |
 | 9 | 👑 | As the owner of a project, I want to **delete** it so that outdated ideas don't clutter the gallery. |
+
+</details>
+
+<details>
+<summary><b>⭐ &nbsp;Collection & Mine</b> &nbsp;—&nbsp; Stories 10-13 (Add · Remove · Summary · My projects)</summary>
+
+<br/>
+
+| # | Role | Story |
+|---|---|---|
 | 10 | 🔐 | As a logged-in user, I want to **add a project to my collection** so that I can come back to it later. |
 | 11 | 🔐 | As a logged-in user, I want to **remove a project from my collection** so that my shortlist stays clean. |
 | 12 | 🔐 | As a logged-in user, I want to see **my collection plus a resource summary** so that I know which skills, tools, APIs and hardware my whole shortlist requires. |
 | 13 | 🔐 | As a logged-in user, I want to **see all my own projects in one place** so that I can quickly find and manage what I have built. |
+
+</details>
 
 ---
 
