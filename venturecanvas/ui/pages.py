@@ -269,7 +269,8 @@ class Pages:
         self._apply_brand()
         with ui.header().classes("vc-appbar items-center justify-between px-4 py-2"):
             with ui.row().classes("items-center gap-5"):
-                with ui.link(target="/home").classes(
+                # Logo returns to the landing page ("/"), not the dashboard.
+                with ui.link(target="/").classes(
                     "flex items-center gap-2 no-underline"
                 ):
                     self._logo_glyph(26)
