@@ -7,8 +7,8 @@
 <br/>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/offical_logo.png" />
-  <img src="docs/offical_logo.png" alt="VentureCanvas" width="420" />
+  <source media="(prefers-color-scheme: dark)" srcset="docs/official_logo.png" />
+  <img src="docs/official_logo.png" alt="VentureCanvas" width="420" />
 </picture>
 
 <br/>

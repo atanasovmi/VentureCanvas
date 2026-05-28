@@ -1,2 +1,312 @@
-/* VentureCanvas — minimal style overrides on top of Quasar defaults.
-   Populated during the UI step. */
+/* ============================================================================
+   VentureCanvas — landing & brand stylesheet
+   Black & white foundation (true to the logo) · warm terracotta→amber accent
+   Bold & promising, kept simple. Space Grotesk + DM Sans.
+   Loaded once (shared) via ui.add_css() in application.run().
+   ========================================================================== */
+
+:root {
+  /* ----- ink & text (pitch black + warm-neutral greys) ----- */
+  --vc-ink:        #0A0A0A;   /* headings, dark surfaces                      */
+  --vc-body:       #44403C;   /* body text on white  (stone-700, ~9:1)       */
+  --vc-muted:      #57534E;   /* muted / meta text   (stone-600, ~7:1)       */
+
+  /* ----- surfaces (warm neutrals to pair with terracotta) ----- */
+  --vc-white:      #FFFFFF;
+  --vc-bg-soft:    #FAFAF9;   /* alternating sections (stone-50)             */
+  --vc-bg-softer:  #F5F5F4;   /* stone-100                                   */
+  --vc-border:     #E7E5E4;   /* hairline borders (stone-200)                */
+  --vc-border-2:   #D6D3D1;   /* stone-300                                   */
+  --vc-dark:       #0A0A0A;   /* pitch-black panels                          */
+  --vc-dark-2:     #18181B;   /* near-black panel highlight                  */
+
+  /* ----- accent: terracotta → amber (token names kept for stability) ----- */
+  --vc-indigo:     #EA580C;   /* accent (bright) — fills/icon gradients      */
+  --vc-indigo-700: #C2410C;   /* accent TEXT on white (terracotta, ~4.9:1)   */
+  --vc-violet:     #F59E0B;   /* amber                                       */
+  --vc-cyan:       #D97706;   /* gold                                        */
+  --vc-emerald:    #22C55E;   /* live/active community signal — green (go)    */
+  --vc-live-text:  #15803D;   /* readable green text for community signals    */
+
+  --vc-grad:      linear-gradient(120deg, #9A3412 0%, #EA580C 50%, #F59E0B 100%);
+  --vc-grad-soft: linear-gradient(120deg, #C2410C 0%, #EA580C 45%, #F59E0B 100%);
+  --vc-tint:      rgba(234, 88, 12, .10);
+
+  /* ----- typography ----- */
+  --vc-font-head: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --vc-font-body: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* ----- radii ----- */
+  --vc-r-sm: 10px; --vc-r-md: 16px; --vc-r-lg: 24px; --vc-r-xl: 32px; --vc-r-pill: 999px;
+
+  /* ----- shadows (soft, neutral black) ----- */
+  --vc-shadow-sm:  0 1px 2px rgba(0,0,0,.06), 0 1px 1px rgba(0,0,0,.04);
+  --vc-shadow-md:  0 10px 30px -12px rgba(0,0,0,.16);
+  --vc-shadow-lg:  0 30px 60px -24px rgba(0,0,0,.24);
+  --vc-shadow-glow:0 22px 60px -18px rgba(234,88,12,.42);
+
+  /* ----- motion ----- */
+  --vc-dur-micro: 200ms;
+  --vc-dur-enter: 640ms;
+  --vc-ease: cubic-bezier(.22,.61,.36,1);
+}
+
+/* ----------------------------------------------------------------- base ---- */
+body { font-family: var(--vc-font-body); color: var(--vc-body); background: var(--vc-bg-soft); }
+html { scroll-behavior: smooth; }
+
+/* in-page anchor targets, offset for the fixed navbar */
+.vc-anchor { display: block; height: 0; scroll-margin-top: 5.5rem; }
+
+/* recolor the (black) logo to white for the dark footer */
+.vc-logo-white { filter: brightness(0) invert(1); }
+
+/* The landing route lives inside .vc-landing — scope brand typography there
+   so we never fight Quasar defaults on the app pages. */
+.vc-landing { font-family: var(--vc-font-body); color: var(--vc-body); background: var(--vc-white); }
+.vc-landing h1, .vc-landing h2, .vc-landing h3,
+.vc-head { font-family: var(--vc-font-head); color: var(--vc-ink); letter-spacing: -.02em; line-height: 1.08; font-weight: 700; }
+.vc-body-font { font-family: var(--vc-font-body); }
+
+.vc-eyebrow { font-family: var(--vc-font-body); font-weight: 600; font-size: .8rem;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--vc-indigo-700); }
+
+.vc-grad-text { background: var(--vc-grad-soft); -webkit-background-clip: text;
+  background-clip: text; color: transparent; }
+
+/* keep decorative layers from stealing clicks */
+.vc-deco { pointer-events: none; }
+
+/* --------------------------------------------------------------- buttons --- */
+.vc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  font-family: var(--vc-font-body); font-weight: 600; font-size: 1rem;
+  line-height: 1; text-decoration: none; cursor: pointer; white-space: nowrap;
+  border-radius: var(--vc-r-pill); padding: .85rem 1.5rem; border: 1px solid transparent;
+  transition: transform var(--vc-dur-micro) var(--vc-ease),
+              box-shadow var(--vc-dur-micro) var(--vc-ease),
+              background var(--vc-dur-micro) var(--vc-ease),
+              border-color var(--vc-dur-micro) var(--vc-ease),
+              filter var(--vc-dur-micro) var(--vc-ease);
+}
+.vc-btn:hover { text-decoration: none; }
+.vc-btn svg { width: 1.15em; height: 1.15em; }
+
+.vc-btn-primary { color: #fff; background: var(--vc-grad); background-size: 140% 140%;
+  box-shadow: var(--vc-shadow-glow); }
+.vc-btn-primary:hover { transform: translateY(-2px); filter: brightness(1.06);
+  box-shadow: 0 28px 80px -18px rgba(234,88,12,.6); color: #fff; }
+.vc-btn-primary:active { transform: translateY(0); }
+
+.vc-btn-secondary { color: var(--vc-ink); background: #fff; border-color: var(--vc-border-2);
+  box-shadow: var(--vc-shadow-sm); }
+.vc-btn-secondary:hover { transform: translateY(-2px); border-color: var(--vc-indigo);
+  color: var(--vc-indigo-700); box-shadow: var(--vc-shadow-md); }
+
+.vc-btn-ghost { color: var(--vc-body); background: transparent; }
+.vc-btn-ghost:hover { color: var(--vc-indigo-700); }
+
+.vc-btn-sm { padding: .6rem 1.05rem; font-size: .9rem; }
+.vc-btn-lg { padding: 1rem 1.85rem; font-size: 1.06rem; }
+
+/* on the dark CTA band: a white-fill primary for contrast */
+.vc-btn-onbrand { color: var(--vc-indigo-700); background: #fff; box-shadow: var(--vc-shadow-lg); }
+.vc-btn-onbrand:hover { transform: translateY(-2px); color: var(--vc-indigo-700); filter: brightness(1.02); }
+.vc-btn-onbrand-ghost { color: #fff; background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.40); backdrop-filter: blur(6px); }
+.vc-btn-onbrand-ghost:hover { background: rgba(255,255,255,.18); color: #fff; }
+
+/* ------------------------------------------------------------------ nav ---- */
+.vc-nav {
+  background: rgba(255,255,255,.72);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+          backdrop-filter: saturate(160%) blur(14px);
+  border: 1px solid rgba(231,229,228,.9);
+  box-shadow: var(--vc-shadow-sm);
+  transition: background var(--vc-dur-micro) var(--vc-ease),
+              box-shadow var(--vc-dur-micro) var(--vc-ease),
+              border-color var(--vc-dur-micro) var(--vc-ease);
+}
+.vc-nav.is-scrolled { background: rgba(255,255,255,.92); box-shadow: var(--vc-shadow-md);
+  border-color: var(--vc-border); }
+
+.vc-nav-link { position: relative; color: var(--vc-body); font-weight: 500; font-size: .95rem;
+  text-decoration: none; padding: .35rem .1rem; transition: color var(--vc-dur-micro); }
+.vc-nav-link::after { content: ""; position: absolute; left: 0; bottom: -2px; height: 2px; width: 0;
+  border-radius: 2px; background: var(--vc-grad); transition: width var(--vc-dur-micro) var(--vc-ease); }
+.vc-nav-link:hover { color: var(--vc-ink); text-decoration: none; }
+.vc-nav-link:hover::after { width: 100%; }
+
+.vc-wordmark { font-family: var(--vc-font-head); font-weight: 700; letter-spacing: -.02em;
+  color: var(--vc-ink); }
+
+/* refreshed shared app header (other pages) */
+.vc-appbar { background: rgba(255,255,255,.92) !important;
+  -webkit-backdrop-filter: saturate(150%) blur(10px); backdrop-filter: saturate(150%) blur(10px);
+  border-bottom: 1px solid var(--vc-border); box-shadow: none !important; color: var(--vc-ink); }
+.vc-appbar-link { color: var(--vc-body); text-decoration: none; font-weight: 500;
+  transition: color var(--vc-dur-micro); }
+.vc-appbar-link:hover { color: var(--vc-indigo-700); text-decoration: none; }
+
+/* ----------------------------------------------------------------- cards --- */
+.vc-card { background: #fff; border: 1px solid var(--vc-border); border-radius: var(--vc-r-lg);
+  box-shadow: var(--vc-shadow-md); }
+
+.vc-bento { position: relative; overflow: hidden; background: #fff; border: 1px solid var(--vc-border);
+  border-radius: var(--vc-r-lg); padding: 1.6rem;
+  transition: transform var(--vc-dur-micro) var(--vc-ease),
+              box-shadow var(--vc-dur-micro) var(--vc-ease),
+              border-color var(--vc-dur-micro) var(--vc-ease); }
+.vc-bento:hover { transform: translateY(-4px); box-shadow: var(--vc-shadow-lg); border-color: var(--vc-border-2); }
+
+/* dark emphasis bento (Resource Summary money card) — pitch black */
+.vc-bento-dark { background: radial-gradient(120% 140% at 0% 0%, var(--vc-dark-2) 0%, var(--vc-dark) 60%);
+  border-color: rgba(255,255,255,.08); color: #fff; }
+.vc-bento-dark h3 { color: #fff; }
+.vc-bento-dark p { color: #D6D3D1; }
+
+.vc-cat-card { position: relative; display: flex; flex-direction: column; gap: .85rem;
+  background: #fff; border: 1px solid var(--vc-border); border-radius: var(--vc-r-md);
+  padding: 1.15rem; text-decoration: none; cursor: pointer;
+  transition: transform var(--vc-dur-micro) var(--vc-ease),
+              box-shadow var(--vc-dur-micro) var(--vc-ease),
+              border-color var(--vc-dur-micro) var(--vc-ease); }
+.vc-cat-card:hover { transform: translateY(-4px); box-shadow: var(--vc-shadow-md);
+  border-color: transparent; text-decoration: none; }
+
+/* icon tile */
+.vc-ico { display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 13px; background: var(--vc-tint); color: var(--vc-indigo-700);
+  transition: background var(--vc-dur-micro) var(--vc-ease), color var(--vc-dur-micro) var(--vc-ease); }
+.vc-ico svg { width: 22px; height: 22px; }
+.vc-cat-card:hover .vc-ico { background: var(--vc-grad); color: #fff; }
+.vc-ico-light { background: rgba(255,255,255,.12); color: #fff; }
+
+/* glass / elevated panels */
+.vc-panel { background: #fff; border: 1px solid var(--vc-border); border-radius: var(--vc-r-lg);
+  box-shadow: var(--vc-shadow-lg); }
+.vc-panel-dark { background: radial-gradient(130% 130% at 100% 0%, var(--vc-dark-2) 0%, var(--vc-dark) 55%);
+  border: 1px solid rgba(255,255,255,.08); border-radius: var(--vc-r-lg); color: #fff;
+  box-shadow: var(--vc-shadow-lg); }
+
+/* ----------------------------------------------------------------- chips --- */
+.vc-chip { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 500;
+  padding: .28rem .6rem; border-radius: var(--vc-r-pill); background: var(--vc-bg-softer);
+  color: var(--vc-muted); border: 1px solid var(--vc-border); white-space: nowrap; }
+.vc-chip-accent { background: var(--vc-tint); color: var(--vc-indigo-700); border-color: transparent; }
+.vc-chip-live { background: rgba(34,197,94,.12); color: var(--vc-live-text); border-color: transparent; }
+.vc-chip-ondark { background: rgba(255,255,255,.08); color: #E7E5E4; border-color: rgba(255,255,255,.12); }
+
+.vc-tag { display: inline-flex; align-items: center; gap: .4rem; font-size: .72rem; font-weight: 600;
+  letter-spacing: .02em; padding: .3rem .65rem; border-radius: var(--vc-r-pill);
+  background: rgba(245,158,11,.16); color: #B45309; }
+
+/* ------------------------------------------------------------- live dot ---- */
+.vc-live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 999px;
+  background: var(--vc-emerald); box-shadow: 0 0 0 0 rgba(34,197,94,.5);
+  animation: vc-pulse 2.2s var(--vc-ease) infinite; }
+@keyframes vc-pulse { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
+  70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } }
+
+/* --------------------------------------------------------------- numbers --- */
+.vc-stat-num { font-family: var(--vc-font-head); font-weight: 700; color: var(--vc-ink);
+  line-height: 1; letter-spacing: -.02em; }
+
+/* --------------------------------------------------------------- step ------ */
+.vc-step-badge { display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border-radius: 999px; background: var(--vc-grad); color: #fff;
+  font-family: var(--vc-font-head); font-weight: 700; font-size: 1.25rem;
+  box-shadow: var(--vc-shadow-glow); }
+
+/* ------------------------------------------------------------ team strip --- */
+.vc-ring { display: block; background: var(--vc-grad); padding: 4px; border-radius: 24px;
+  box-shadow: var(--vc-shadow-md);
+  transition: transform var(--vc-dur-micro) var(--vc-ease),
+              box-shadow var(--vc-dur-micro) var(--vc-ease); }
+.vc-team-photo { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: contain;
+  background: #fff; border-radius: 20px; padding: 10px; }
+.vc-team-card:hover .vc-ring { transform: translateY(-5px); box-shadow: var(--vc-shadow-lg); }
+
+/* ----------------------------------------------------------------- hero ---- */
+.vc-hero { position: relative; overflow: hidden; background: #fff; }
+.vc-hero-glow { position: absolute; inset: -25% -10% auto -10%; height: 90%; z-index: 0;
+  background:
+    radial-gradient(40% 60% at 22% 16%, rgba(234,88,12,.16) 0%, transparent 60%),
+    radial-gradient(44% 62% at 82% 12%, rgba(245,158,11,.16) 0%, transparent 62%),
+    radial-gradient(40% 55% at 65% 78%, rgba(217,119,6,.12) 0%, transparent 60%);
+  filter: blur(48px); opacity: .85;
+  animation: vc-drift 16s var(--vc-ease) infinite alternate; }
+@keyframes vc-drift {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  100% { transform: translate3d(2%,3%,0) scale(1.1); } }
+
+.vc-grid-tex { position: absolute; inset: 0; z-index: 0; opacity: .55;
+  background-image: radial-gradient(rgba(10,10,10,.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(80% 65% at 50% 28%, #000 25%, transparent 80%);
+          mask-image: radial-gradient(80% 65% at 50% 28%, #000 25%, transparent 80%); }
+
+/* floating product-preview card in the hero */
+.vc-float { animation: vc-float 7s var(--vc-ease) infinite; }
+@keyframes vc-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+/* connector arrow glow — points right on desktop, down when stacked */
+.vc-merge-arrow { display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; border-radius: 999px; background: var(--vc-grad); color: #fff;
+  box-shadow: var(--vc-shadow-glow); flex-shrink: 0; }
+@media (max-width: 1023px) { .vc-merge-arrow { transform: rotate(90deg); } }
+
+/* --------------------------------------------------------------- CTA band -- */
+/* pitch black with a warm ember glow */
+.vc-cta-band { position: relative; overflow: hidden;
+  background: linear-gradient(120deg, #0A0A0A 0%, #171717 55%, #1C140F 100%); color: #fff; }
+.vc-cta-glow { position: absolute; inset: -30%; z-index: 0; pointer-events: none;
+  background: radial-gradient(40% 60% at 18% 28%, rgba(234,88,12,.50) 0%, transparent 60%),
+              radial-gradient(45% 60% at 86% 72%, rgba(245,158,11,.42) 0%, transparent 60%);
+  filter: blur(54px); animation: vc-drift 14s var(--vc-ease) infinite alternate; }
+
+/* --------------------------------------------------------------- footer ---- */
+.vc-footer { background: #0A0A0A; color: #A8A29E; }
+.vc-footer a { color: #D6D3D1; text-decoration: none; transition: color var(--vc-dur-micro); }
+.vc-footer a:hover { color: #fff; text-decoration: none; }
+.vc-footer h4 { color: #fff; font-family: var(--vc-font-head); font-weight: 600; font-size: .95rem; }
+
+/* ----------------------------------------------------- scroll-reveal ------- */
+/* Progressive enhancement: only hide-to-reveal once JS marks <html> .vc-js,
+   so without/with-slow JS (or reduced motion) content is always visible. */
+.vc-js .vc-reveal { opacity: 0; transform: translateY(26px);
+  transition: opacity var(--vc-dur-enter) var(--vc-ease), transform var(--vc-dur-enter) var(--vc-ease); }
+.vc-js .vc-reveal.is-in { opacity: 1; transform: none; }
+.vc-d1 { transition-delay: 80ms; } .vc-d2 { transition-delay: 160ms; }
+.vc-d3 { transition-delay: 240ms; } .vc-d4 { transition-delay: 320ms; } .vc-d5 { transition-delay: 400ms; }
+
+/* ------------------------------------------------------------ focus ring --- */
+.vc-landing a:focus-visible, .vc-landing button:focus-visible, .vc-focus:focus-visible,
+.vc-appbar a:focus-visible, .vc-appbar button:focus-visible {
+  outline: none; border-radius: 12px;
+  box-shadow: 0 0 0 3px rgba(234,88,12,.55), 0 0 0 5px rgba(255,255,255,.85); }
+
+/* ============================================================================
+   App pages (outside the landing): a light, consistent brand wash so the
+   product feels like the same site — kept simple, no layout changes.
+   ========================================================================== */
+.q-card { border-radius: var(--vc-r-md) !important; border: 1px solid var(--vc-border);
+  box-shadow: var(--vc-shadow-md) !important; }
+.q-btn { border-radius: 10px; text-transform: none; font-weight: 600; }
+.q-page .text-4xl, .q-page .text-3xl, .q-page .text-2xl, .q-page .text-xl {
+  font-family: var(--vc-font-head); letter-spacing: -.02em; }
+
+/* whole-card clickable (project grid & list cards) */
+.vc-hovercard { cursor: pointer;
+  transition: transform var(--vc-dur-micro) var(--vc-ease),
+              box-shadow var(--vc-dur-micro) var(--vc-ease),
+              border-color var(--vc-dur-micro) var(--vc-ease); }
+.vc-hovercard:hover { transform: translateY(-3px);
+  box-shadow: var(--vc-shadow-lg) !important; border-color: var(--vc-border-2) !important; }
+
+/* --------------------------------------------------- reduced motion -------- */
+@media (prefers-reduced-motion: reduce) {
+  .vc-hero-glow, .vc-cta-glow, .vc-float, .vc-live-dot { animation: none !important; }
+  .vc-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .vc-btn:hover, .vc-bento:hover, .vc-cat-card:hover, .vc-team-card:hover .vc-ring { transform: none !important; }
+}
