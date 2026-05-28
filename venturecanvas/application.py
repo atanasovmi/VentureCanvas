@@ -17,10 +17,11 @@ event loop.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
-from nicegui import ui
+from nicegui import app, ui
 
 from .data_access.dao import CollectionDAO, ProjectDAO, UserDAO
 from .data_access.db import Database
@@ -37,6 +38,17 @@ from .ui.controllers import (
 )
 from .ui.pages import Pages
 from .ui.session_state import SessionState
+
+_STATIC_DIR = Path(__file__).parent / "static"
+
+_FONTS_HEAD = (
+    '<link rel="preconnect" href="https://fonts.googleapis.com">'
+    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
+    "family=DM+Sans:wght@400;500;600;700&"
+    "family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    '">'
+)
 
 
 class VentureCanvasApplication:
@@ -109,6 +121,12 @@ class VentureCanvasApplication:
         storage_secret: Optional[str] = None,
     ) -> None:
         """Register routes and start the NiceGUI event loop."""
+        # Serve the static directory (logo, team photos, stylesheet) and load
+        # the brand fonts + stylesheet into every page's <head> once. These
+        # must run before ``ui.run`` so the assets exist before any page render.
+        app.add_static_files("/static", _STATIC_DIR)
+        ui.add_head_html(_FONTS_HEAD, shared=True)
+        ui.add_css(_STATIC_DIR / "styles.css", shared=True)
         self.pages.register()
         ui.run(
             host=host,

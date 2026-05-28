@@ -79,3 +79,6 @@ Desktop.ini
 coverage/
 *.lcov
 .nyc_output/
+
+# ---------- Course materials (kept local, not published) ----------
+docs/fhnw-digest/
