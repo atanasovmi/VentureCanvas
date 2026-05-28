@@ -576,7 +576,7 @@ python -m venturecanvas      # opens http://localhost:8080
 ```
 
 > [!NOTE]
-> The first launch automatically creates the SQLite file and seeds one demo user plus six sample projects across the five categories.
+> The first launch automatically creates the SQLite file and seeds one demo user plus sample projects across the five categories.
 
 > [!TIP]
 > **Demo credentials** &nbsp;·&nbsp; `admin@venturecanvas.com` &nbsp;/&nbsp; `admin123`
