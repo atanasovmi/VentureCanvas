@@ -32,7 +32,7 @@ class BaseDAO(Generic[ModelT]):
     def add(self, session: Session, entity: ModelT) -> ModelT:
         """Insert a new entity and flush so its PK is populated."""
         session.add(entity)
-        session.flush()
+        session.flush()   # send INSERT now so entity.id is available before commit
         return entity
 
     def get(self, session: Session, entity_id: int) -> Optional[ModelT]:
@@ -72,10 +72,10 @@ class ProjectDAO(BaseDAO[Project]):
         owner_id: Optional[int] = None,
     ) -> List[Project]:
         """Return projects newest-first, optionally filtered by category and/or owner."""
-        stmt = select(Project).order_by(Project.created_at.desc())
-        if category is not None:
+        stmt = select(Project).order_by(Project.created_at.desc())  # newest first
+        if category is not None:                       # optional category filter (home chips)
             stmt = stmt.where(Project.category == category)
-        if owner_id is not None:
+        if owner_id is not None:                       # optional owner filter ("my projects")
             stmt = stmt.where(Project.owner_id == owner_id)
         return list(session.exec(stmt).all())
 
@@ -88,6 +88,8 @@ class CollectionDAO(BaseDAO[CollectionItem]):
     def get_by_user_and_project(
         self, session: Session, user_id: int, project_id: int
     ) -> Optional[CollectionItem]:
+        # Look up the single row for this (user, project) pair — used both to
+        # dedup before an add and to find the row to remove.
         stmt = select(CollectionItem).where(
             CollectionItem.user_id == user_id,
             CollectionItem.project_id == project_id,
@@ -99,7 +101,7 @@ class CollectionDAO(BaseDAO[CollectionItem]):
     ) -> List[CollectionItem]:
         stmt = (
             select(CollectionItem)
-            .where(CollectionItem.user_id == user_id)
-            .order_by(CollectionItem.added_at.desc())
+            .where(CollectionItem.user_id == user_id)   # only this user's saves
+            .order_by(CollectionItem.added_at.desc())   # most recently added first
         )
         return list(session.exec(stmt).all())

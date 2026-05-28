@@ -36,22 +36,37 @@ class PasswordHasher:
 
     def hash(self, plaintext: str) -> str:
         """Return the storable ``iterations$salt$hash`` representation."""
-        salt = secrets.token_bytes(self._SALT_BYTES)
-        derived = hashlib.pbkdf2_hmac(
+        salt = secrets.token_bytes(self._SALT_BYTES)   # fresh random salt per password
+        derived = hashlib.pbkdf2_hmac(                 # slow, salted one-way derivation
             "sha256", plaintext.encode("utf-8"), salt, self._iterations
         )
+        # Pack everything verify() needs into one column: cost, salt, and digest.
         return f"{self._iterations}${salt.hex()}${derived.hex()}"
 
     def verify(self, plaintext: str, stored: str) -> bool:
-        """Return ``True`` iff *plaintext* matches the hash encoded in *stored*."""
+        """Return ``True`` iff *plaintext* matches the hash encoded in *stored*.
+
+        Total by contract: a malformed ``stored`` string, a non-positive
+        iteration count, or a ``None``/non-string *plaintext* all yield
+        ``False`` rather than raising, so the auth service can treat a wrong
+        password and a corrupt row identically. The whole derivation lives
+        inside the ``try`` for that reason — ``pbkdf2_hmac`` itself rejects
+        a zero/negative work factor, and ``None.encode`` raises.
+        """
         try:
+            # Unpack the three fields we packed in hash().
             iterations_str, salt_hex, hash_hex = stored.split("$", 2)
             iterations = int(iterations_str)
+            if iterations < 1:
+                return False
             salt = bytes.fromhex(salt_hex)
             expected = bytes.fromhex(hash_hex)
+            # Re-derive with the SAME salt + cost; a matching password yields
+            # the same bytes.
+            derived = hashlib.pbkdf2_hmac(
+                "sha256", plaintext.encode("utf-8"), salt, iterations
+            )
         except (ValueError, AttributeError):
             return False
-        derived = hashlib.pbkdf2_hmac(
-            "sha256", plaintext.encode("utf-8"), salt, iterations
-        )
+        # Constant-time compare to avoid leaking match info via timing.
         return hmac.compare_digest(derived, expected)

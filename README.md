@@ -32,7 +32,7 @@
   <img src="https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white&style=for-the-badge" alt="Python 3.11+" />
   <img src="https://img.shields.io/badge/NiceGUI-3.10-1976D2?logo=quasar&logoColor=white&style=for-the-badge" alt="NiceGUI 3.10" />
   <img src="https://img.shields.io/badge/SQLModel-0.0.38-005571?logo=fastapi&logoColor=white&style=for-the-badge" alt="SQLModel 0.0.38" />
-  <img src="https://img.shields.io/badge/pytest-14%2F14_passing-0A9EDC?logo=pytest&logoColor=white&style=for-the-badge" alt="14/14 tests" />
+  <img src="https://img.shields.io/badge/pytest-20%2F20_passing-0A9EDC?logo=pytest&logoColor=white&style=for-the-badge" alt="20/20 tests" />
   <img src="https://img.shields.io/badge/License-MIT-000000?style=for-the-badge" alt="MIT License" />
   <img src="https://img.shields.io/badge/Built_at-FHNW_FS26-EB0028?style=for-the-badge" alt="FHNW FS26" />
 </p>
@@ -84,7 +84,7 @@ A central component of the platform is interaction within the community: project
 
 <div align="center">
 
-`🏗 Three-layer Architecture`  `🐍 Pure Python`  `🎨 NiceGUI`  `🗄 SQLModel`  `✅ 14 Tests Green`
+`🏗 Three-layer Architecture`  `🐍 Pure Python`  `🎨 NiceGUI`  `🗄 SQLModel`  `✅ 20 Tests Green`
 
 </div>
 
@@ -442,7 +442,7 @@ erDiagram
   <img src="docs/architecture-diagrams/er_diagram.png" alt="ER diagram" width="500" />
 </div>
 
-Every column carries an explicit `Field(...)` declaration (`min_length`, `max_length`, `unique`, `index`, `foreign_key`) so the schema documents its own constraints and the type system stops bad data at object-construction time for non-table code paths. Because SQLModel's `table=True` models skip pydantic validation at construction, `ProjectService` re-runs the same title/description rules defensively in code.
+Every column carries an explicit `Field(...)` declaration (`min_length`, `max_length`, `unique`, `index`, `foreign_key`): this is the single declarative source of truth and it shapes the generated SQL schema. Because SQLModel's `table=True` models skip pydantic validation at construction, the length/format rules are enforced in the **service layer**, not on the model — `AuthService` validates the username, email and password; `ProjectService` validates the title and description, bounds the four requirement lists, and coerces the category to the closed `Category` set. The database enforces the structural guarantees: `unique` on username/email and the `(user_id, project_id)` `UniqueConstraint` on the collection.
 
 ---
 
@@ -459,8 +459,8 @@ Every column carries an explicit `Field(...)` declaration (`min_length`, `max_le
 | **Three-layer architecture** | `ui` → `services` → `data_access` → `domain`. Imports only go downward. |
 | **OOP throughout** | Every file under `domain/`, `data_access/`, `services/` and `ui/controllers.py` is class-based; dependencies are injected via constructors (Plan.md §0.1). |
 | **ORM, no raw SQL** | SQLModel (SQLAlchemy 2) with Relationship back-populates; DAOs only ever call `session.exec(select(...))`. |
-| **Data validation** | `Field(min_length=…, max_length=…, unique=…)` on every user-facing column; services add defensive checks where SQLModel's `table=True` is permissive. |
-| **Tests** | 14 pytest tests across unit / DB / integration — see §9. |
+| **Data validation** | `Field(min_length=…, max_length=…, unique=…)` declares every user-facing bound; `AuthService` / `ProjectService` enforce length, format and the `Category` set in code, since `table=True` models skip pydantic validation. |
+| **Tests** | 20 pytest tests across unit / DB / integration — see §9. |
 | **Team of 3 with equitable GitHub contribution** | See §11. |
 
 ---
@@ -590,7 +590,7 @@ python -m venturecanvas      # opens http://localhost:8080
 ## 9 · Testing
 
 <p>
-  <img src="https://img.shields.io/badge/tests-14%2F14_passing-success?style=flat-square&logo=pytest&logoColor=white" alt="14/14 tests passing" />
+  <img src="https://img.shields.io/badge/tests-20%2F20_passing-success?style=flat-square&logo=pytest&logoColor=white" alt="20/20 tests passing" />
   <img src="https://img.shields.io/badge/layers-unit_·_db_·_integration-blue?style=flat-square" alt="Test layers" />
 </p>
 
@@ -598,11 +598,11 @@ python -m venturecanvas      # opens http://localhost:8080
 pytest
 ```
 
-14 tests, all green:
+20 tests, all green:
 
 | File | Count | Layer |
 |---|---|---|
-| `tests/test_unit.py` | 8 | Service layer (Auth, Project, Collection) |
+| `tests/test_unit.py` | 14 | Service layer (Auth, Project, Collection) + password hasher; includes the validation rules (short username, invalid email, unknown category) |
 | `tests/test_db.py` | 3 | DAO + ORM (roundtrip, unique constraint, seeder) |
 | `tests/test_integration.py` | 3 | Controller end-to-end flows |
 

@@ -1,9 +1,10 @@
 """Project service — CRUD with ownership checks.
 
 All write operations verify that the caller owns the target project;
-the controller layer never does this check itself. The category
-parameter is typed as :class:`Category`, so filtering and creation both
-reject values outside the five-chip set at the service boundary.
+the controller layer never does this check itself. Creation and editing
+coerce the category through :class:`Category`, so a value outside the
+five-chip set is rejected at the service boundary rather than being
+stored silently — a ``table=True`` model won't reject it on its own.
 """
 
 from __future__ import annotations
@@ -20,12 +21,14 @@ from .errors import ForbiddenError, NotFoundError, ValidationError
 class ProjectService:
     """Business logic for browsing, creating, editing and deleting projects.
 
-    Validation lives here *as well as* on the
-    :class:`~venturecanvas.domain.models.Project` ``Field(...)``
-    declarations: SQLModel's ``table=True`` models skip pydantic
-    validation at construction time, so we enforce the same rules
-    defensively in the service. Field() remains the single declarative
-    source of truth; this class is the execution point.
+    Validation lives here, not on the model. SQLModel's ``table=True``
+    models skip pydantic validation at construction time, so this class
+    re-checks every user-facing rule before persisting: title and
+    description length, the four comma-separated requirement lists, and
+    the category enum. The ``Field(...)`` declarations on
+    :class:`~venturecanvas.domain.models.Project` remain the single
+    declarative source of truth for those bounds; this class is the
+    execution point.
     """
 
     _UPDATABLE_FIELDS = (
@@ -42,6 +45,7 @@ class ProjectService:
     _TITLE_MAX = 200
     _DESCRIPTION_MIN = 1
     _DESCRIPTION_MAX = 2000
+    _REQUIRED_MAX = 300  # mirrors Project.required_* Field(max_length=300)
 
     def __init__(self, database: Database, project_dao: ProjectDAO) -> None:
         self._db = database
@@ -109,6 +113,13 @@ class ProjectService:
         """Persist a new project authored by ``owner_id``."""
         self._validate_title(title)
         self._validate_description(description)
+        category = self._coerce_category(category)
+        self._validate_requirements(
+            required_skills=required_skills or "",
+            required_tools=required_tools or "",
+            required_apis=required_apis or "",
+            required_hardware=required_hardware or "",
+        )
 
         project = Project(
             owner_id=owner_id,
@@ -148,12 +159,28 @@ class ProjectService:
                 self._validate_title(str(fields["title"]))
             if "description" in fields and fields["description"] is not None:
                 self._validate_description(str(fields["description"]))
+            # Bound only the requirement lists actually supplied, so a
+            # partial edit (e.g. title-only) is left untouched.
+            self._validate_requirements(
+                **{
+                    name: str(fields[name])
+                    for name in (
+                        "required_skills",
+                        "required_tools",
+                        "required_apis",
+                        "required_hardware",
+                    )
+                    if name in fields and fields[name] is not None
+                }
+            )
 
             for field_name in self._UPDATABLE_FIELDS:
                 if field_name in fields and fields[field_name] is not None:
                     value = fields[field_name]
                     if field_name in {"title", "description"} and isinstance(value, str):
                         value = value.strip()
+                    elif field_name == "category":
+                        value = self._coerce_category(value)
                     setattr(project, field_name, value)
             project.updated_at = datetime.now(timezone.utc)
             return project
@@ -173,6 +200,40 @@ class ProjectService:
             self._project_dao.delete(session, project)
 
     # ------------------------------------------------------------------ validation
+
+    def _coerce_category(self, value: object) -> Category:
+        """Return *value* as a :class:`Category`, rejecting anything else.
+
+        ``Category(value)`` is idempotent for an existing member, so the UI
+        (which already hands us a :class:`Category`) is unaffected. A stray
+        string from a non-UI caller raises :class:`ValidationError` instead
+        of being persisted unchecked — a ``table=True`` model accepts it
+        silently otherwise.
+        """
+        try:
+            return Category(value)
+        except ValueError as exc:
+            raise ValidationError("Unknown project category.") from exc
+
+    def _validate_requirements(
+        self,
+        *,
+        required_skills: str = "",
+        required_tools: str = "",
+        required_apis: str = "",
+        required_hardware: str = "",
+    ) -> None:
+        """Bound each comma-separated requirement list to the model's max_length."""
+        for label, value in (
+            ("Skills", required_skills),
+            ("Tools", required_tools),
+            ("APIs", required_apis),
+            ("Hardware", required_hardware),
+        ):
+            if len(value or "") > self._REQUIRED_MAX:
+                raise ValidationError(
+                    f"{label} cannot exceed {self._REQUIRED_MAX} characters."
+                )
 
     def _validate_title(self, title: str) -> None:
         stripped = (title or "").strip()

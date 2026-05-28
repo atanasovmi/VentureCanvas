@@ -21,7 +21,12 @@ from .password_hasher import PasswordHasher
 # Module-level constant so it's easy to scan and edit the seed content
 # without touching the seeder mechanics. Entries are grouped by category
 # and rendered newest-first within each section.
+#
+# Each entry is a dict with the same six keys, which map 1:1 onto the
+# Project model: title, description, skills, tools, apis, hardware.
+# (The "required_" prefix is added by the builder below.)
 _SAMPLE_PROJECTS_BY_CATEGORY: dict[Category, list[dict]] = {
+    # ── IoT · sensors & connected devices ──────────────────────────────
     Category.IOT: [
         dict(
             title="Smart Plant Watering",
@@ -128,6 +133,7 @@ _SAMPLE_PROJECTS_BY_CATEGORY: dict[Category, list[dict]] = {
             hardware="Reed switch, magnet, AAA pack",
         ),
     ],
+    # ── AI · models, agents & RAG ──────────────────────────────────────
     Category.AI: [
         dict(
             title="Retrieval-Augmented Chatbot",
@@ -305,6 +311,7 @@ _SAMPLE_PROJECTS_BY_CATEGORY: dict[Category, list[dict]] = {
             hardware="",
         ),
     ],
+    # ── Web · apps that live in the browser ────────────────────────────
     Category.WEB: [
         dict(
             title="Collaborative Markdown Editor",
@@ -468,6 +475,7 @@ _SAMPLE_PROJECTS_BY_CATEGORY: dict[Category, list[dict]] = {
             hardware="",
         ),
     ],
+    # ── Mobile · iOS & Android builds ──────────────────────────────────
     Category.MOBILE: [
         dict(
             title="Habit Tracker",
@@ -603,6 +611,7 @@ _SAMPLE_PROJECTS_BY_CATEGORY: dict[Category, list[dict]] = {
             hardware="",
         ),
     ],
+    # ── Hardware · PCBs, robotics & physical builds ────────────────────
     Category.HARDWARE: [
         dict(
             title="DIY Mechanical Keyboard",
@@ -873,6 +882,8 @@ class ProjectSeeder:
         # Stagger timestamps so Newest/Oldest/A-Z sorts each produce a
         # different visible order — important for demoing the sort dropdown.
         now = datetime.now(timezone.utc)
+        # Flatten the {category: [entries]} map into one ordered list of
+        # (category, entry) pairs so we can assign each a distinct timestamp.
         flat: List[Tuple[Category, dict]] = [
             (cat, item)
             for cat, items in _SAMPLE_PROJECTS_BY_CATEGORY.items()
@@ -880,6 +891,8 @@ class ProjectSeeder:
         ]
         projects: List[Project] = []
         for i, (cat, item) in enumerate(flat):
+            # Each project is one day + a few hours older than the previous,
+            # giving every row a unique created_at for stable sorting.
             ts = now - timedelta(days=i, hours=(i * 7) % 24)
             projects.append(
                 Project(

@@ -35,6 +35,16 @@ class TestAuthService:
         with pytest.raises(AuthError):
             auth_service.authenticate("bob@example.com", "wrong")
 
+    def test_register_short_username_rejected(self, auth_service):
+        # 2 chars is below the model's min_length=3; the service must reject
+        # it (table=True models don't validate this themselves).
+        with pytest.raises(ValidationError):
+            auth_service.register("ab", "ab@example.com", "password")
+
+    def test_register_invalid_email_rejected(self, auth_service):
+        with pytest.raises(ValidationError):
+            auth_service.register("validname", "not-an-email", "password")
+
 
 class TestProjectService:
     @pytest.fixture
@@ -60,6 +70,17 @@ class TestProjectService:
                 title="",  # below min_length=2
                 description="anything",
                 category=Category.WEB,
+            )
+
+    def test_create_invalid_category(self, project_service, owner_id):
+        # A raw string outside the five-chip set must be rejected at the
+        # service boundary, not silently stored.
+        with pytest.raises(ValidationError):
+            project_service.create(
+                owner_id=owner_id,
+                title="Valid title",
+                description="anything",
+                category="NotACategory",
             )
 
 
@@ -105,3 +126,19 @@ class TestCollectionService:
         assert summary["tools"] == ["LangChain", "Vite"]
         # Python must appear exactly once even though it's in both projects.
         assert summary["skills"].count("Python") == 1
+
+
+class TestPasswordHasher:
+    def test_roundtrip(self, hasher):
+        stored = hasher.hash("correct horse")
+        assert hasher.verify("correct horse", stored) is True
+        assert hasher.verify("wrong", stored) is False
+
+    def test_verify_returns_false_on_empty_stored(self, hasher):
+        # A corrupt/empty hash column must fail closed, never raise.
+        assert hasher.verify("anything", "") is False
+
+    def test_verify_returns_false_on_malformed_stored(self, hasher):
+        # iterations=0 makes pbkdf2 reject the work factor; verify() must
+        # swallow that and return False rather than 500 the login.
+        assert hasher.verify("x", "0$" + "ab" * 16 + "$" + "cd" * 32) is False

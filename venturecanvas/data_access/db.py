@@ -69,11 +69,11 @@ class Database:
 
     def init_schema_and_seed(self) -> None:
         """Create all tables; if a seeder is wired in and the DB is empty, run it."""
-        SQLModel.metadata.create_all(self._engine)
-        if self._seeder is None:
+        SQLModel.metadata.create_all(self._engine)   # CREATE TABLE for every model (no-op if they exist)
+        if self._seeder is None:                      # tests pass no seeder → empty DB
             return
         with self.session_scope() as session:
-            if not self._seeder.is_already_seeded(session):
+            if not self._seeder.is_already_seeded(session):  # idempotent: seed only once
                 self._seeder.seed(session)
 
     @contextmanager
@@ -87,10 +87,10 @@ class Database:
         """
         session = Session(self._engine, expire_on_commit=False)
         try:
-            yield session
-            session.commit()
+            yield session         # caller runs all its DAO calls inside this block
+            session.commit()      # success path: persist everything atomically
         except Exception:
-            session.rollback()
-            raise
+            session.rollback()    # any error → undo the whole unit of work
+            raise                 # re-raise so the service/UI can react
         finally:
-            session.close()
+            session.close()       # always release the connection

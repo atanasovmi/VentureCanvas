@@ -85,37 +85,10 @@ _ICON_PATHS: dict[str, str] = {
 }
 
 
-def _icon_svg(name: str, size: int = 24, stroke: float = 2) -> str:
-    """Return an inline SVG string for ``name`` (decorative; aria-hidden)."""
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" '
-        f'width="{size}" height="{size}" fill="none" stroke="currentColor" '
-        f'stroke-width="{stroke}" stroke-linecap="round" stroke-linejoin="round" '
-        f'aria-hidden="true">{_ICON_PATHS[name]}</svg>'
-    )
-
-
-def _ico(name: str, classes: str = "", size: int = 24, stroke: float = 2):
-    """Inline-render a trusted SVG icon, colourable via Tailwind text classes."""
-    return ui.html(
-        _icon_svg(name, size, stroke), sanitize=False, tag="span"
-    ).classes(f"inline-flex items-center justify-center {classes}")
-
-
-def _heading(level: int, inner_html: str, classes: str = ""):
-    """Render a real heading element (semantic h1..h4) with trusted markup."""
-    return ui.html(inner_html, sanitize=False, tag=f"h{level}").classes(classes)
-
-
-def _logo_glyph(height_px: int, extra_style: str = ""):
-    """The bold 'VC' glyph as a crisp <img> at a fixed height."""
-    return ui.html(
-        f'<img src="/static/logo_glyph.png" alt="VentureCanvas" '
-        f'style="height:{height_px}px;width:auto;display:block;{extra_style}">',
-        sanitize=False,
-        tag="span",
-    ).classes("inline-flex items-center")
-
+# The data above is module-level reference data (immutable lookup tables and
+# copy). The helpers that *render* it — inline SVG, headings, the logo glyph —
+# live as methods on the Pages class instead, per Plan.md §0.1: behaviour
+# belongs to the class that owns it, not to loose module-level functions.
 
 _CATEGORIES = [
     ("IoT", "cpu", "Sensors & connected devices"),
@@ -228,11 +201,46 @@ class Pages:
         self._project = project_controller
         self._collection = collection_controller
 
+    # ------------------------------------------------------- presentation helpers
+    # Small, stateless builders for the trusted inline markup the pages render.
+    # They are methods (not module functions) so all rendering behaviour lives
+    # on the View class — see the note by the icon tables above.
+
+    def _icon_svg(self, name: str, size: int = 24, stroke: float = 2) -> str:
+        """Return an inline SVG string for ``name`` (decorative; aria-hidden)."""
+        return (
+            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" '
+            f'width="{size}" height="{size}" fill="none" stroke="currentColor" '
+            f'stroke-width="{stroke}" stroke-linecap="round" stroke-linejoin="round" '
+            f'aria-hidden="true">{_ICON_PATHS[name]}</svg>'
+        )
+
+    def _ico(self, name: str, classes: str = "", size: int = 24, stroke: float = 2):
+        """Inline-render a trusted SVG icon, colourable via Tailwind text classes."""
+        return ui.html(
+            self._icon_svg(name, size, stroke), sanitize=False, tag="span"
+        ).classes(f"inline-flex items-center justify-center {classes}")
+
+    def _heading(self, level: int, inner_html: str, classes: str = ""):
+        """Render a real heading element (semantic h1..h4) with trusted markup."""
+        return ui.html(inner_html, sanitize=False, tag=f"h{level}").classes(classes)
+
+    def _logo_glyph(self, height_px: int, extra_style: str = ""):
+        """The bold 'VC' glyph as a crisp <img> at a fixed height."""
+        return ui.html(
+            f'<img src="/static/logo_glyph.png" alt="VentureCanvas" '
+            f'style="height:{height_px}px;width:auto;display:block;{extra_style}">',
+            sanitize=False,
+            tag="span",
+        ).classes("inline-flex items-center")
+
     # ------------------------------------------------------------------ register
 
     def register(self) -> None:
         """Attach every ``@ui.page`` to a bound method on this instance."""
-        ui.page("/")(self._landing_page)  
+        # Each line maps a URL to a page method. `{project_id}` is a path
+        # parameter NiceGUI passes straight into the matching method argument.
+        ui.page("/")(self._landing_page)
         ui.page("/home")(self._home_page)  
         ui.page("/login")(self._login_page)
         ui.page("/register")(self._register_page)
@@ -264,7 +272,7 @@ class Pages:
                 with ui.link(target="/home").classes(
                     "flex items-center gap-2 no-underline"
                 ):
-                    _logo_glyph(26)
+                    self._logo_glyph(26)
                     ui.label("VentureCanvas").classes("vc-wordmark text-base")
                 ui.link("Home", "/home").classes("vc-appbar-link")
                 if self._auth.is_authenticated:
@@ -334,7 +342,7 @@ class Pages:
                 with ui.link(target="/").classes(
                     "flex items-center gap-2.5 no-underline shrink-0"
                 ):
-                    _logo_glyph(28)
+                    self._logo_glyph(28)
                     ui.label("VentureCanvas").classes("vc-wordmark text-lg")
                 with ui.element("div").classes("hidden md:flex items-center gap-8"):
                     ui.link("Features", "#features").classes("vc-nav-link")
@@ -349,7 +357,7 @@ class Pages:
                             "vc-btn vc-btn-primary vc-btn-sm no-underline"
                         ):
                             ui.label("Get started")
-                            _ico("arrow-right", "", 16)
+                            self._ico("arrow-right", "", 16)
                     else:
                         with ui.element("div").classes(
                             "hidden sm:flex items-center gap-2 mr-1"
@@ -409,7 +417,7 @@ class Pages:
                         with ui.element("div").classes("vc-reveal vc-chip vc-chip-live"):
                             ui.html('<span class="vc-live-dot"></span>', sanitize=False)
                             ui.label("A growing community of makers")
-                        _heading(
+                        self._heading(
                             1,
                             "Share ideas. Build together.<br>"
                             '<span class="vc-grad-text">Create impact.</span>',
@@ -432,18 +440,18 @@ class Pages:
                                     "vc-btn vc-btn-primary vc-btn-lg no-underline"
                                 ):
                                     ui.label("Discover projects")
-                                    _ico("arrow-right", "", 18)
+                                    self._ico("arrow-right", "", 18)
                                 with ui.link(target="/register").classes(
                                     "vc-btn vc-btn-secondary vc-btn-lg no-underline"
                                 ):
-                                    _ico("user-plus", "", 18)
+                                    self._ico("user-plus", "", 18)
                                     ui.label("Join free")
                             else:
                                 with ui.link(target="/home").classes(
                                     "vc-btn vc-btn-primary vc-btn-lg no-underline"
                                 ):
                                     ui.label("Go to dashboard")
-                                    _ico("arrow-right", "", 18)
+                                    self._ico("arrow-right", "", 18)
                                 with ui.link(target="/collection").classes(
                                     "vc-btn vc-btn-secondary vc-btn-lg no-underline"
                                 ):
@@ -484,7 +492,7 @@ class Pages:
                         with ui.element("div").classes("vc-ico").style(
                             "width:38px;height:38px"
                         ):
-                            _ico("bookmark", "", 20)
+                            self._ico("bookmark", "", 20)
                         with ui.element("div").classes("flex flex-col"):
                             ui.label("My collection").classes(
                                 "vc-head text-sm font-semibold leading-tight"
@@ -514,13 +522,13 @@ class Pages:
                                 with ui.element("span").classes("vc-chip"):
                                     ui.label(chip)
                 with ui.element("div").classes("flex justify-center py-3"):
-                    _ico("chevron-down", "text-[#A8A29E]", 22)
+                    self._ico("chevron-down", "text-[#A8A29E]", 22)
                 with ui.element("div").classes("vc-panel-dark p-4"):
                     with ui.element("div").classes("flex items-center gap-2 mb-3"):
                         with ui.element("div").classes("vc-ico vc-ico-light").style(
                             "width:30px;height:30px;border-radius:9px"
                         ):
-                            _ico("layers", "", 16)
+                            self._ico("layers", "", 16)
                         ui.label("Resource Summary").classes(
                             "vc-head text-white text-sm font-semibold"
                         )
@@ -550,7 +558,7 @@ class Pages:
                     "vc-reveal flex flex-col items-center text-center gap-3 mb-10"
                 ):
                     ui.label("Explore by category").classes("vc-eyebrow")
-                    _heading(2, "Five tracks. One community.",
+                    self._heading(2, "Five tracks. One community.",
                              "text-3xl md:text-4xl font-bold")
                     ui.label(
                         "From a weekend Arduino build to a production RAG app — "
@@ -564,7 +572,7 @@ class Pages:
                             f"vc-cat-card vc-reveal vc-d{min(i + 1, 5)} no-underline"
                         ):
                             with ui.element("div").classes("vc-ico"):
-                                _ico(icon, "", 22)
+                                self._ico(icon, "", 22)
                             ui.label(name).classes("vc-head text-lg font-semibold")
                             ui.label(desc).classes("text-sm text-[#57534E]")
 
@@ -578,7 +586,7 @@ class Pages:
             ):
                 with ui.element("div").classes("vc-reveal flex flex-col gap-5"):
                     ui.label("The problem").classes("vc-eyebrow")
-                    _heading(2, "A notebook full of ideas.<br>Nowhere to build from.",
+                    self._heading(2, "A notebook full of ideas.<br>Nowhere to build from.",
                              "text-3xl md:text-4xl font-bold leading-tight")
                     ui.label(
                         "Most makers keep a running list — a soil-moisture meter, a RAG "
@@ -592,7 +600,7 @@ class Pages:
                     "vc-reveal vc-d2 vc-card p-7 md:p-9 flex flex-col gap-5"
                 ):
                     ui.label("The solution").classes("vc-eyebrow")
-                    _heading(2, "One canvas — from idea to build list.",
+                    self._heading(2, "One canvas — from idea to build list.",
                              "text-2xl md:text-3xl font-bold")
                     ui.label(
                         "VentureCanvas gives every idea a home, a community to discover, "
@@ -607,7 +615,7 @@ class Pages:
                         "Auto-aggregate skills, tools, APIs & hardware",
                     ]:
                         with ui.element("div").classes("flex items-center gap-3"):
-                            _ico("circle-check", "text-[#C2410C] shrink-0", 20)
+                            self._ico("circle-check", "text-[#C2410C] shrink-0", 20)
                             ui.label(item).classes("text-[#44403C]")
 
     # ----- landing: features bento ------------------------------------------
@@ -622,7 +630,7 @@ class Pages:
                     "vc-reveal flex flex-col items-center text-center gap-3 mb-12"
                 ):
                     ui.label("Everything in one place").classes("vc-eyebrow")
-                    _heading(2, "Built for makers who ship",
+                    self._heading(2, "Built for makers who ship",
                              "text-3xl md:text-5xl font-bold")
                     ui.label(
                         "Five tools that turn a list of ideas into a plan you can act on."
@@ -658,7 +666,7 @@ class Pages:
             f"vc-bento vc-reveal {delay} {span} flex flex-col gap-3"
         ):
             with ui.element("div").classes("vc-ico"):
-                _ico(icon, "", 22)
+                self._ico(icon, "", 22)
             ui.label(title).classes("vc-head text-lg font-semibold")
             ui.label(desc).classes("text-[#57534E] leading-relaxed")
 
@@ -677,7 +685,7 @@ class Pages:
                 "relative flex items-center justify-between"
             ):
                 with ui.element("div").classes("vc-ico vc-ico-light"):
-                    _ico("layers", "", 22)
+                    self._ico("layers", "", 22)
                 with ui.element("span").classes(
                     "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 "
                     "text-xs font-semibold"
@@ -721,7 +729,7 @@ class Pages:
                     "vc-reveal flex flex-col items-center text-center gap-3 mb-14"
                 ):
                     ui.label("How it works").classes("vc-eyebrow")
-                    _heading(2, "Three steps to your build plan",
+                    self._heading(2, "Three steps to your build plan",
                              "text-3xl md:text-4xl font-bold")
                 with ui.element("div").classes("grid md:grid-cols-3 gap-10 md:gap-6"):
                     for i, (num, icon, title, desc) in enumerate(_STEPS):
@@ -732,7 +740,7 @@ class Pages:
                             ui.html(f'<div class="vc-step-badge">{num}</div>',
                                     sanitize=False)
                             with ui.element("div").classes("vc-ico"):
-                                _ico(icon, "", 22)
+                                self._ico(icon, "", 22)
                             ui.label(title).classes("vc-head text-xl font-semibold")
                             ui.label(desc).classes(
                                 "text-[#57534E] leading-relaxed max-w-xs"
@@ -742,7 +750,7 @@ class Pages:
                         "vc-btn vc-btn-primary no-underline"
                     ):
                         ui.label("Discover projects")
-                        _ico("arrow-right", "", 18)
+                        self._ico("arrow-right", "", 18)
 
     # ----- landing: resource-summary spotlight ------------------------------
 
@@ -756,7 +764,7 @@ class Pages:
                 ):
                     with ui.element("div").classes("vc-chip vc-chip-accent"):
                         ui.label("See it in action")
-                    _heading(2, "Your whole collection, summed up.",
+                    self._heading(2, "Your whole collection, summed up.",
                              "text-3xl md:text-5xl font-bold")
                     ui.label(
                         "Stop tab-hopping between project pages. One view tells you "
@@ -775,7 +783,7 @@ class Pages:
                         "flex lg:flex-col items-center justify-center gap-2"
                     ):
                         ui.html('<span class="vc-merge-arrow">'
-                                + _icon_svg("arrow-right", 24) + "</span>", sanitize=False)
+                                + self._icon_svg("arrow-right", 24) + "</span>", sanitize=False)
                         ui.label("auto-aggregated").classes(
                             "text-xs text-[#A8A29E] font-medium text-center"
                         )
@@ -787,7 +795,7 @@ class Pages:
                                 with ui.element("div").classes("vc-ico vc-ico-light").style(
                                     "width:32px;height:32px;border-radius:9px"
                                 ):
-                                    _ico("layers", "", 17)
+                                    self._ico("layers", "", 17)
                                 ui.label("Resource Summary").classes(
                                     "vc-head text-white font-semibold"
                                 )
@@ -865,8 +873,8 @@ class Pages:
                     "vc-reveal vc-card max-w-3xl mx-auto p-8 md:p-10 flex flex-col gap-4 "
                     "items-center text-center"
                 ):
-                    _ico("quote", "text-[#C2410C]", 32)
-                    _heading(
+                    self._ico("quote", "text-[#C2410C]", 32)
+                    self._heading(
                         3,
                         "“Everybody has a notebook full of project ideas. "
                         "VentureCanvas is the place to record them, share them, and see "
@@ -883,7 +891,7 @@ class Pages:
                         "flex flex-col items-center gap-2 text-center"
                     ):
                         ui.label("The team").classes("vc-eyebrow")
-                        _heading(2, "Built by three makers at FHNW",
+                        self._heading(2, "Built by three makers at FHNW",
                                  "text-2xl md:text-3xl font-bold")
                     with ui.element("div").classes(
                         "grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 w-full max-w-3xl"
@@ -919,7 +927,7 @@ class Pages:
                     "relative z-10 mx-auto max-w-3xl px-6 py-20 md:py-28 "
                     "flex flex-col items-center text-center gap-6"
                 ):
-                    _heading(2, "Your next build starts with one idea.",
+                    self._heading(2, "Your next build starts with one idea.",
                              "text-white text-4xl md:text-5xl font-bold")
                     ui.label(
                         "Join VentureCanvas free, save the projects that inspire you, "
@@ -933,7 +941,7 @@ class Pages:
                                 "vc-btn vc-btn-onbrand vc-btn-lg no-underline"
                             ):
                                 ui.label("Get started free")
-                                _ico("arrow-right", "", 18)
+                                self._ico("arrow-right", "", 18)
                             with ui.link(target="/home").classes(
                                 "vc-btn vc-btn-onbrand-ghost vc-btn-lg no-underline"
                             ):
@@ -943,7 +951,7 @@ class Pages:
                                 "vc-btn vc-btn-onbrand vc-btn-lg no-underline"
                             ):
                                 ui.label("Go to your dashboard")
-                                _ico("arrow-right", "", 18)
+                                self._ico("arrow-right", "", 18)
                     ui.label(
                         "No credit card. No setup. Built by students, for builders."
                     ).classes("text-sm text-[#A8A29E]")
@@ -997,7 +1005,7 @@ class Pages:
                     with ui.link(target=GITHUB_REPO, new_tab=True).classes(
                         "no-underline"
                     ).props('aria-label="VentureCanvas on GitHub"'):
-                        _ico("github", "text-[#A8A29E]", 22)
+                        self._ico("github", "text-[#A8A29E]", 22)
 
     def _footer_col(self, title: str, links) -> None:
         with ui.element("div").classes("flex flex-col gap-3"):
@@ -1015,6 +1023,9 @@ class Pages:
         # reveals slowly, four cards at a time.
         ALL_INITIAL, ALL_CHUNK = 12, 36
         CAT_INITIAL, CAT_CHUNK = 8, 4
+        # Single mutable view-model for this page. Every handler below edits
+        # `state` and calls refresh() to re-render — there is no other source
+        # of truth for what the grid shows.
         state = {
             "category": None,        # Optional[Category]; None = show all
             "search": "",
@@ -1060,6 +1071,8 @@ class Pages:
                     on_change=on_sort_change,
                 ).props("dense outlined").classes("w-40")
 
+            # The only region that re-renders: refresh() clears `results` and
+            # rebuilds the chips + grid from the current `state`.
             results = ui.column().classes("w-full gap-4")
 
             def select_cat(target) -> None:
@@ -1146,6 +1159,12 @@ class Pages:
             refresh()
 
     def _render_project_card(self, project: Project) -> None:
+        """Fixed-width (w-80) card used by the My-Projects row.
+
+        Sibling of :meth:`_render_grid_card`, which instead stretches to fill
+        a responsive grid cell. The whole card is clickable; the description
+        is truncated to ~140 chars with an ellipsis.
+        """
         with ui.card().classes("w-80 flex flex-col gap-2 vc-hovercard").on(
             "click", lambda e=None, pid=project.id: ui.navigate.to(f"/project/{pid}")
         ):
@@ -1196,6 +1215,8 @@ class Pages:
             password = ui.input("Password", password=True, password_toggle_button=True).classes("w-full")
 
             def submit() -> None:
+                # Pattern used by every form: call the controller, turn any
+                # typed service error into a toast, otherwise notify + navigate.
                 try:
                     self._auth.login(email=email.value, password=password.value)
                 except AuthError as exc:
@@ -1243,16 +1264,18 @@ class Pages:
                 ui.link("← Back to home", "/home")
             return
 
+        # Precompute everything the template branches on, so the layout below
+        # stays declarative.
         cat = project.category.value
-        icon = _CATEGORY_ICON.get(cat, "layers")
+        icon = _CATEGORY_ICON.get(cat, "layers")   # fall back to a generic icon
         reqs = [
             ("Skills", project.required_skills),
             ("Tools", project.required_tools),
             ("APIs", project.required_apis),
             ("Hardware", project.required_hardware),
         ]
-        has_reqs = any(v and v.strip() for _label, v in reqs)
-        is_owner = self._project.is_owner(project)
+        has_reqs = any(v and v.strip() for _label, v in reqs)  # any non-empty list?
+        is_owner = self._project.is_owner(project)             # show edit/delete only to the owner
 
         with ui.column().classes("w-full max-w-5xl mx-auto p-6 md:p-8 gap-6"):
             ui.link("← All projects", "/home").classes("vc-appbar-link text-sm")
@@ -1261,7 +1284,7 @@ class Pages:
             with ui.card().classes("w-full p-6 md:p-8 gap-3"):
                 with ui.row().classes("items-center gap-3"):
                     with ui.element("div").classes("vc-ico"):
-                        _ico(icon, "", 22)
+                        self._ico(icon, "", 22)
                     ui.label(cat).classes(
                         "bg-[#0A0A0A] text-white rounded-full px-3 py-1 "
                         "text-xs font-semibold"
@@ -1334,6 +1357,8 @@ class Pages:
                         ).props("flat color=primary no-caps").classes("w-full")
 
             # ---- more in this category --------------------------------------
+            # Same-category projects, newest first, excluding the one being
+            # viewed, capped at four for the "More in …" strip.
             related = [
                 p
                 for p in self._home.list_filtered(
@@ -1350,6 +1375,8 @@ class Pages:
                         self._render_grid_card(related_project)
 
     def _render_requirement(self, label: str, raw_value: str) -> None:
+        # Turn one comma-separated field into a labelled row of chips; render
+        # nothing if it's blank.
         if not raw_value:
             return
         tokens = [t.strip() for t in raw_value.split(",") if t.strip()]
@@ -1361,6 +1388,8 @@ class Pages:
                 ui.chip(tok, color="primary").props("outline")
 
     def _handle_add_to_collection(self, project_id: int) -> None:
+        # Map each typed service error to the right toast: a real problem is a
+        # "warning"; an already-saved project is just "info", not a failure.
         try:
             self._collection.add(project_id)
         except (ForbiddenError, NotFoundError) as exc:
@@ -1541,6 +1570,8 @@ class Pages:
         if not self._guard_authenticated():
             return
 
+        # view() returns both halves at once: the saved projects (left) and the
+        # deduplicated cross-project resource summary (right sidebar).
         projects, summary = self._collection.view()
         with ui.row().classes("w-full p-6 gap-6 items-start"):
             with ui.column().classes("flex-grow gap-3"):
@@ -1561,6 +1592,9 @@ class Pages:
                                 )
                             ui.label(project.description[:180]).classes("text-sm")
                             with ui.row().classes("gap-2"):
+                                # pid=project.id binds the current id as a default
+                                # arg, capturing it now — otherwise every button
+                                # would close over the last loop value.
                                 ui.button(
                                     "Open",
                                     on_click=lambda pid=project.id: ui.navigate.to(
@@ -1572,6 +1606,8 @@ class Pages:
                                     on_click=lambda pid=project.id: self._handle_remove_from_collection(pid),
                                 ).props("flat color=negative")
 
+            # Right sidebar: the signature feature — every requirement across
+            # the whole collection, merged and deduplicated into four lists.
             with ui.card().classes("w-80"):
                 ui.label("Resource summary").classes("text-lg font-bold mb-2")
                 self._render_summary_section("Skills", summary["skills"])

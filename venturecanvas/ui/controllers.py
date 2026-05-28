@@ -40,8 +40,9 @@ class AuthController:
     def login(self, email: str, password: str) -> User:
         """Authenticate and start a session. Raises :class:`AuthError` on failure."""
         user = self._auth.authenticate(email=email, password=password)
-        if user.id is None:  # defensive; register always assigns a PK
+        if user.id is None:  # defensive; a registered user always has a PK
             raise AuthError("User record has no id.")
+        # Remember who is logged in for this browser (stored in SessionState).
         self._session.login(user_id=user.id, username=user.username)
         return user
 
@@ -86,6 +87,8 @@ class HomeController:
         self, limit_per_section: int = 3
     ) -> Dict[Category, List[Project]]:
         """For the magazine layout: newest <= ``limit_per_section`` projects per category."""
+        # One trimmed, newest-first list per category — the home page renders
+        # each as its own row/section.
         return {
             cat: self._project_service.list(category=cat)[:limit_per_section]
             for cat in self.available_categories()
@@ -170,6 +173,8 @@ class ProjectController:
         return current is not None and project.owner_id == current
 
     def _require_user_id(self) -> int:
+        # Gate every write/personal action behind a login. The service still
+        # re-checks ownership, so this is the first of two defences.
         user_id = self._session.current_user_id()
         if user_id is None:
             raise ForbiddenError("You must be logged in to do that.")
@@ -203,6 +208,8 @@ class CollectionController:
         return projects, summary
 
     def _require_user_id(self) -> int:
+        # Gate every write/personal action behind a login. The service still
+        # re-checks ownership, so this is the first of two defences.
         user_id = self._session.current_user_id()
         if user_id is None:
             raise ForbiddenError("You must be logged in to do that.")

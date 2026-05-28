@@ -6,7 +6,10 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 
-from venturecanvas.data_access.seed import ProjectSeeder
+from venturecanvas.data_access.seed import (
+    _SAMPLE_PROJECTS_BY_CATEGORY,
+    ProjectSeeder,
+)
 from venturecanvas.domain.models import Category, CollectionItem, Project, User
 
 
@@ -81,4 +84,7 @@ class TestSeeder:
             user_count = len(list(session.exec(select(User)).all()))
             project_count = len(list(session.exec(select(Project)).all()))
             assert user_count == 1
-            assert project_count == 6  # the six sample projects
+            # Derive the expected count from the seed data itself so this
+            # assertion self-heals when sample projects are added/removed.
+            expected = sum(len(v) for v in _SAMPLE_PROJECTS_BY_CATEGORY.values())
+            assert project_count == expected  # every curated sample project

@@ -64,11 +64,15 @@ class VentureCanvasApplication:
     def __init__(self, database: Optional[Database] = None) -> None:
         load_dotenv()
 
+        # Objects are built bottom-up — persistence first, then the services
+        # that depend on it, then the UI that depends on the services. Each
+        # layer receives its collaborators here and nowhere else.
+
         # --- Persistence layer ------------------------------------------------
         self.password_hasher = PasswordHasher()
         self.seeder = ProjectSeeder(self.password_hasher)
-        self.database = database or Database(seeder=self.seeder)
-        self.database.init_schema_and_seed()
+        self.database = database or Database(seeder=self.seeder)  # tests inject their own DB
+        self.database.init_schema_and_seed()                      # create tables + seed once
 
         self.user_dao = UserDAO()
         self.project_dao = ProjectDAO()

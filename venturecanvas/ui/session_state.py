@@ -28,11 +28,13 @@ class SessionState:
 
     def login(self, user_id: int, username: str) -> None:
         """Mark the current browser as logged in as ``user_id`` / ``username``."""
+        # Writing to app.storage.user persists in this browser's signed cookie.
         app.storage.user[self._KEY_USER_ID] = user_id
         app.storage.user[self._KEY_USERNAME] = username
 
     def logout(self) -> None:
         """Forget the current browser's login."""
+        # pop(..., None): remove if present, never raise if already gone.
         app.storage.user.pop(self._KEY_USER_ID, None)
         app.storage.user.pop(self._KEY_USERNAME, None)
 

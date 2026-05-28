@@ -38,8 +38,10 @@ class CollectionService:
         """
         with self._db.session_scope() as session:
             project = self._project_dao.get(session, project_id)
-            if project is None:
+            if project is None:                       # can't save something that doesn't exist
                 raise NotFoundError("Project not found.")
+            # Friendly pre-check for the duplicate case; the DB UniqueConstraint
+            # is still the ultimate guard against a race.
             existing = self._collection_dao.get_by_user_and_project(
                 session, user_id=user_id, project_id=project_id
             )
@@ -75,6 +77,8 @@ class CollectionService:
         chips. An empty collection returns empty lists under every key.
         """
         projects = self.list_projects(user_id)
+        # One set per resource type — sets dedup automatically, so a tool that
+        # appears in three saved projects still lands in the summary once.
         skills: set[str] = set()
         tools: set[str] = set()
         apis: set[str] = set()
@@ -84,6 +88,7 @@ class CollectionService:
             tools.update(self._split_tags(project.required_tools))
             apis.update(self._split_tags(project.required_apis))
             hardware.update(self._split_tags(project.required_hardware))
+        # sorted() turns each set into a stable, alphabetised list for the chips.
         return {
             "skills": sorted(skills),
             "tools": sorted(tools),
