@@ -616,32 +616,30 @@ Each test opens a fresh `tmp_path`-backed SQLite, so there is no shared state be
 
 ## 10 · UI screenshots
 
-See `docs/ui-images/`:
+Captured from a live `python -m venturecanvas` session against the seeded demo data — stored in `docs/ui-images/`.
 
 <table>
 <tr>
 <td width="50%" align="center" valign="top">
-  <img src="docs/ui-images/home.png" alt="home — browse + filter chips" width="100%" /><br/>
-  <sub><b>home.png</b> — browse + filter chips</sub>
+  <img src="docs/ui-images/landing.png" alt="Landing page — hero pitch with a live collection preview" width="100%" /><br/>
+  <sub><b>landing.png</b> — public landing page: hero pitch + collection preview (80+ ideas · 5 categories · 4 resource types)</sub>
 </td>
 <td width="50%" align="center" valign="top">
-  <img src="docs/ui-images/project_detail.png" alt="project detail with requirement chips" width="100%" /><br/>
-  <sub><b>project_detail.png</b> — detail view with requirement chips</sub>
+  <img src="docs/ui-images/home.png" alt="Home — Discover grid with search and category filter chips" width="100%" /><br/>
+  <sub><b>home.png</b> — Discover grid: search, category chips (IoT · AI · Web · Mobile · Hardware), project cards</sub>
 </td>
 </tr>
 <tr>
 <td width="50%" align="center" valign="top">
-  <img src="docs/ui-images/new_project.png" alt="new project create form" width="100%" /><br/>
-  <sub><b>new_project.png</b> — create form</sub>
+  <img src="docs/ui-images/project_detail.png" alt="Project detail — requirement chips, add-to-collection panel and owner tools" width="100%" /><br/>
+  <sub><b>project_detail.png</b> — project detail: requirement chips, Add to collection, owner Edit/Delete, related projects</sub>
 </td>
 <td width="50%" align="center" valign="top">
-  <img src="docs/ui-images/collection.png" alt="collection — saved projects + resource summary" width="100%" /><br/>
-  <sub><b>collection.png</b> — saved projects + resource summary</sub>
+  <img src="docs/ui-images/new_project.png" alt="New project — create form with title, category, description and requirements" width="100%" /><br/>
+  <sub><b>new_project.png</b> — create form: title, category, description, and the four requirement fields</sub>
 </td>
 </tr>
 </table>
-
-*(Screenshots are captured after a `python -m venturecanvas` run against the seeded demo data.)*
 
 ---
 
