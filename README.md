@@ -7,8 +7,8 @@
 <br/>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/logo.ressouces/official_logo.png" />
-  <img src="docs/logo.ressouces/official_logo.png" alt="VentureCanvas" width="420" />
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo.resources/official_logo.png" />
+  <img src="docs/logo.resources/official_logo.png" alt="VentureCanvas" width="420" />
 </picture>
 
 <br/>
@@ -544,8 +544,8 @@ venturecanvas-v2/
 └── docs/
     ├── architecture-diagrams/              # UML class, use-case, ER (PNG)
     ├── ui-images/                          # screenshots
-    ├── SS26_Guidelines_Programmierprojekt (1).pdf
-    └── SS26_Assessment_Programmierprojekt.xlsm
+    ├── profiles/                           # team member portraits (§11)
+    └── logo.resources/                     # logo assets (hero / branding)
 ```
 
 ---
