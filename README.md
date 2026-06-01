@@ -7,8 +7,8 @@
 <br/>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/official_logo.png" />
-  <img src="docs/official_logo.png" alt="VentureCanvas" width="420" />
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo.ressouces/official_logo.png" />
+  <img src="docs/logo.ressouces/official_logo.png" alt="VentureCanvas" width="420" />
 </picture>
 
 <br/>
@@ -653,7 +653,7 @@ Captured from a live `python -m venturecanvas` session against the seeded demo d
 <tr>
 <td width="33%" align="center" valign="top">
 
-<img src="docs/Mihael.png" width="260" alt="Mihael" />
+<img src="docs/profiles/Mihael.png" width="260" alt="Mihael" />
 
 <h3>Mihael</h3>
 
@@ -664,7 +664,7 @@ Captured from a live `python -m venturecanvas` session against the seeded demo d
 </td>
 <td width="33%" align="center" valign="top">
 
-<img src="docs/Eva.png" width="260" alt="Eva" />
+<img src="docs/profiles/Eva.png" width="260" alt="Eva" />
 
 <h3>Eva</h3>
 
@@ -675,7 +675,7 @@ Captured from a live `python -m venturecanvas` session against the seeded demo d
 </td>
 <td width="33%" align="center" valign="top">
 
-<img src="docs/Minh.png" width="260" alt="Minh" />
+<img src="docs/profiles/Minh.png" width="260" alt="Minh" />
 
 <h3>Minh</h3>
 
