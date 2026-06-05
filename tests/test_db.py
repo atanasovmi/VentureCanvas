@@ -6,11 +6,27 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 
+from venturecanvas.data_access.db import Database
 from venturecanvas.data_access.seed import (
     _SAMPLE_PROJECTS_BY_CATEGORY,
     ProjectSeeder,
 )
 from venturecanvas.domain.models import Category, CollectionItem, Project, User
+
+
+class TestDatabaseParentDir:
+    def test_creates_missing_parent_dir_for_sqlite_url(self, tmp_path):
+        """An explicit sqlite URL into a not-yet-existing directory (e.g.
+        ``DATABASE_URL=sqlite:///data/venturecanvas.db`` on a fresh clone)
+        must work — Database creates the parent directory itself, because
+        SQLite creates a missing file but never a missing directory."""
+        db_file = tmp_path / "data" / "app.db"
+        assert not db_file.parent.exists()
+
+        db = Database(database_url=f"sqlite:///{db_file}")
+        db.init_schema_and_seed()
+
+        assert db_file.exists()
 
 
 class TestProjectDAO:

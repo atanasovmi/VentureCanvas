@@ -15,7 +15,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator, Optional, Protocol
 
-from sqlalchemy.engine import Engine
+from sqlalchemy.engine import Engine, make_url
 from sqlmodel import Session, SQLModel, create_engine
 
 
@@ -49,6 +49,7 @@ class Database:
             or os.getenv("DATABASE_URL")
             or self._default_sqlite_url()
         )
+        self._ensure_sqlite_dir(self._database_url)
         # check_same_thread=False is required because NiceGUI serves
         # requests from a worker thread pool.
         self._engine: Engine = create_engine(
@@ -60,8 +61,24 @@ class Database:
 
     @staticmethod
     def _default_sqlite_url() -> str:
-        Path("data").mkdir(parents=True, exist_ok=True)
         return "sqlite:///data/venturecanvas.db"
+
+    @staticmethod
+    def _ensure_sqlite_dir(database_url: str) -> None:
+        """Create the parent directory of a file-backed SQLite URL.
+
+        SQLite creates a missing database *file* on first connect, but
+        never a missing *directory* — without this, any DATABASE_URL
+        pointing into a not-yet-existing folder (e.g. ``data/`` on a
+        fresh clone) fails with "unable to open database file".
+        """
+        url = make_url(database_url)
+        if (
+            url.get_backend_name() == "sqlite"
+            and url.database
+            and url.database != ":memory:"
+        ):
+            Path(url.database).parent.mkdir(parents=True, exist_ok=True)
 
     @property
     def engine(self) -> Engine:
