@@ -569,6 +569,7 @@ cp .env.example .env        # defaults to SQLite at data/venturecanvas.db
 # 3. Create a virtualenv and install
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
+                            # PowerShell: .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 
 # 4. Run
